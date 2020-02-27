@@ -37,7 +37,17 @@ public class BattleSystem : MonoBehaviour {
 			if(Input.GetKeyDown(key)){
 				notPressed = false; 
 			}
-			yield return null; 
+			yield return null; //wait until next frame
+		}
+	}
+
+	private IEnumerator waitForAnyKeyPress(){
+		bool notPressed = true; 
+		while(notPressed){
+			if(Input.anyKey){
+				notPressed = false; 
+			}
+			yield return null; //wait until next frame
 		}
 	}
 
@@ -46,7 +56,7 @@ public class BattleSystem : MonoBehaviour {
 		GameObject player1Obj = Instantiate(player1, playerPos1); 
 		player1Unit = player1Obj.GetComponent<Unit>(); 
 		GameObject enemyObj = Instantiate(enemy, enemyPos1); 
-		enemyUnit = enemyUnit.GetComponent<Unit>(); 
+		enemyUnit = enemyObj.GetComponent<Unit>(); 
 
 		//dialogue beginning text 
 		dialogueText.text = "A wild " + enemyUnit.name + " approaches..."; 
@@ -54,7 +64,7 @@ public class BattleSystem : MonoBehaviour {
 		//set references to HUD (status bars with hp, etc)
 
 		//wait for user to press enter to go to next text 
-		yield return waitForKeyPress(KeyCode.KeypadEnter); 
+		yield return waitForAnyKeyPress(); 
 
 		//change the state 
 		state = BattleState.PLAYER1TURN; 
@@ -62,6 +72,7 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	void PlayerTurn(){
+		Debug.Log("Player's Turn"); 
 		dialogueText.text = "Choose an action."; 
 	}
 	
