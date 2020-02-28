@@ -23,7 +23,9 @@ public class BattleSystem : MonoBehaviour {
 	public Transform playerPos4; 
 	public Transform enemyPos1;
 
-	public Text dialogueText;  
+	public Text dialogueText; 
+
+	public PlayerHUD player1HUD;  
 
 	// Use this for initialization
 	void Start () {
@@ -62,6 +64,7 @@ public class BattleSystem : MonoBehaviour {
 		dialogueText.text = "A wild " + enemyUnit.name + " approaches..."; 
 
 		//set references to HUD (status bars with hp, etc)
+		player1HUD.SetHUD(player1Unit); 
 
 		//wait for user to press enter to go to next text 
 		yield return waitForAnyKeyPress(); 
@@ -72,7 +75,6 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	void PlayerTurn(){
-		Debug.Log("Player's Turn"); 
 		dialogueText.text = "Choose an action."; 
 	}
 	
