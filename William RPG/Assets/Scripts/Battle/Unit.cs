@@ -39,4 +39,11 @@ public class Unit : MonoBehaviour {
 			hp = maxHP; 
 		}
 	}
+
+	public void GainSP(int amount){
+		sp += amount; 
+		if(sp > maxSP){
+			sp = maxSP; 
+		}
+	}
 }

@@ -77,5 +77,98 @@ public class BattleSystem : MonoBehaviour {
 	void PlayerTurn(){
 		dialogueText.text = "Choose an action."; 
 	}
+
+	IEnumerator PlayerAttack(){
+		bool isDead = enemyUnit.TakeDamage(player1Unit.strength); 
+		dialogueText.text = "The attack was successful."; 
+		yield return waitForAnyKeyPress(); 
+		if(isDead){
+			state = BattleState.WON; 
+			EndBattle(); 
+		}
+		else{
+			state = BattleState.ENEMYTURN; 
+			StartCoroutine(EnemyTurn(false)); 
+		}
+	}
+
+	IEnumerator PlayerHeal(){
+		player1Unit.Heal(5); 
+		player1HUD.SetHUD(player1Unit); 
+		dialogueText.text = "You feel revived."; 
+		yield return waitForAnyKeyPress(); 
+		state = BattleState.ENEMYTURN; 
+		StartCoroutine(EnemyTurn(false)); 
+	}
+
+	IEnumerator PlayerDodge(){
+		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
+		yield return waitForAnyKeyPress(); 
+		state = BattleState.ENEMYTURN; 
+		StartCoroutine(EnemyTurn(true)); 
+	}
+
+	IEnumerator EnemyTurn(bool dodging){
+
+		dialogueText.text = enemyUnit.name + " attacks."; 
+		yield return waitForAnyKeyPress();  
+
+		bool isDead = false; 
+		if(dodging){
+			//player doesn't take damage 
+			dialogueText.text = "You moved out of the way.";  
+		}
+		else{
+			isDead = player1Unit.TakeDamage(enemyUnit.strength); 
+			player1HUD.SetHUD(player1Unit); 
+
+			dialogueText.text = "You were hit."; 
+		}
+
+		yield return waitForAnyKeyPress(); 
+		if(isDead){
+			state = BattleState.LOST; 
+			EndBattle(); 
+		}
+		else{
+			state = BattleState.PLAYER1TURN; 
+			PlayerTurn(); 
+		}
+
+	}
+
+	void EndBattle(){
+		if(state == BattleState.WON){
+			dialogueText.text = "You won!"; 
+		} else if(state == BattleState.LOST){
+			dialogueText.text = "You were defeated."; 
+		}
+	}
+
+	public void OnAttackButton(){
+		
+		if(state != BattleState.PLAYER1TURN){
+			return; 
+		}
+
+		StartCoroutine(PlayerAttack()); 
+	}
 	
+	public void OnHealButton(){
+		
+		if(state != BattleState.PLAYER1TURN){
+			return; 
+		}
+
+		StartCoroutine(PlayerHeal()); 
+	}
+	
+	public void OnDodgeButton(){
+		
+		if(state != BattleState.PLAYER1TURN){
+			return; 
+		}
+
+		StartCoroutine(PlayerDodge()); 
+	}
 }
