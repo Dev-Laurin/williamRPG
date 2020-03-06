@@ -19,6 +19,11 @@ public class Player : MonoBehaviour {
 
 	}
 
+	void OnTriggerEnter2D(Collider2D other){
+		Debug.Log("Collision -- Battle"); 
+		//Go to next scene 
+	}
+
 	void FixedUpdate(){
 		//check if user has pressed some input keys 
 		if(Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0){
