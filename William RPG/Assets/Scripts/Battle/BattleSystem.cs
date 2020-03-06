@@ -11,8 +11,8 @@ public class BattleSystem : MonoBehaviour {
 	public GameObject player1; 
 	public GameObject enemy; 
 
-	Unit player1Unit; 
-	Unit enemyUnit; 
+	BattleUnit player1Unit; 
+	BattleUnit enemyUnit; 
 
 	public BattleState state; 
 
@@ -56,9 +56,9 @@ public class BattleSystem : MonoBehaviour {
 	IEnumerator SetupBattle(){
 		//put the players and enemies in their spots 
 		GameObject player1Obj = Instantiate(player1, playerPos1); 
-		player1Unit = player1Obj.GetComponent<Unit>(); 
+		player1Unit = player1Obj.GetComponent<BattleUnit>(); 
 		GameObject enemyObj = Instantiate(enemy, enemyPos1); 
-		enemyUnit = enemyObj.GetComponent<Unit>(); 
+		enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
 
 		//dialogue beginning text 
 		dialogueText.text = "A wild " + enemyUnit.name + " approaches..."; 

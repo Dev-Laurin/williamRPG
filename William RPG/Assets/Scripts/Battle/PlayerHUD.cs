@@ -11,7 +11,7 @@ public class PlayerHUD : MonoBehaviour {
 	public Slider spSlider; 
 	public Image image; 
 
-	public void SetHUD(Unit unit){
+	public void SetHUD(BattleUnit unit){
 		hpText.text = unit.hp + "/" + unit.maxHP; 
 		spText.text = unit.sp + "/" + unit.maxSP; 
 		hpSlider.value = unit.hp; 

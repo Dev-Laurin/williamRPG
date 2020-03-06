@@ -1,10 +1,10 @@
 fileFormatVersion: 2
 guid: 599dc4ed2b16b461db4007c707840942
-timeCreated: 1582704485
+timeCreated: 1583464316
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Homework_enemy_spritesheet_0
+    21300000: Homework_enemy
     21300002: Homework_enemy_spritesheet_1
     21300004: Homework_enemy_spritesheet_2
     21300006: Homework_enemy_spritesheet_3
@@ -24,6 +24,7 @@ TextureImporter:
     21300034: Homework_enemy_spritesheet_17
     21300036: Homework_enemy_spritesheet_18
     21300038: Homework_enemy_spritesheet_19
+    21300040: Homework_enemy_spritesheet_0
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
