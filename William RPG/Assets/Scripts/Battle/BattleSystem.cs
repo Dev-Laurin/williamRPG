@@ -46,7 +46,7 @@ public class BattleSystem : MonoBehaviour {
 	private IEnumerator waitForAnyKeyPress(){
 		bool notPressed = true; 
 		while(notPressed){
-			if(Input.anyKey){
+			if(Input.GetKeyDown("space")){
 				notPressed = false; 
 			}
 			yield return null; //wait until next frame
@@ -57,11 +57,15 @@ public class BattleSystem : MonoBehaviour {
 		//put the players and enemies in their spots 
 		GameObject player1Obj = Instantiate(player1, playerPos1); 
 		player1Unit = player1Obj.GetComponent<BattleUnit>(); 
+		//set the sprite, stats, from Data object 
+		player1Unit.SetStats(Data.GetPlayerParty()[0]); 
+
 		GameObject enemyObj = Instantiate(enemy, enemyPos1); 
 		enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
+		enemyUnit.SetStats(Data.GetEnemyParty()[0]); 
 
 		//dialogue beginning text 
-		dialogueText.text = "A wild " + enemyUnit.name + " approaches..."; 
+		dialogueText.text = "A wild " + enemyUnit.unit.name + " approaches..."; 
 
 		//set references to HUD (status bars with hp, etc)
 		player1HUD.SetHUD(player1Unit); 
@@ -79,7 +83,7 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator PlayerAttack(){
-		bool isDead = enemyUnit.TakeDamage(player1Unit.strength); 
+		bool isDead = enemyUnit.TakeDamage(player1Unit.unit.strength); 
 		dialogueText.text = "The attack was successful."; 
 		yield return waitForAnyKeyPress(); 
 		if(isDead){
@@ -119,7 +123,7 @@ public class BattleSystem : MonoBehaviour {
 			dialogueText.text = "You moved out of the way.";  
 		}
 		else{
-			isDead = player1Unit.TakeDamage(enemyUnit.strength); 
+			isDead = player1Unit.TakeDamage(enemyUnit.unit.strength); 
 			player1HUD.SetHUD(player1Unit); 
 
 			dialogueText.text = "You were hit."; 

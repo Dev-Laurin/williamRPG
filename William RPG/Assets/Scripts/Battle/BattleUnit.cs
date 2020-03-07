@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class BattleUnit : MonoBehaviour {
 
-	public string name; 
-	public int hp; 
-	public int maxHP; 
-	public int maxSP; 
-	public int sp; 
-	public int level; 
-
-	public int defense; 
-	public int strength;
+	public Unit unit; 
 
 	// Use this for initialization
 	void Start () {
@@ -25,25 +17,29 @@ public class BattleUnit : MonoBehaviour {
 		
 	}
 
+	public void SetStats(Unit u){
+		unit = u; 
+	}
+
 	public bool TakeDamage(int damage){
-		hp = hp - (damage - defense); 
-		if(hp <= 0){
+		unit.hp = unit.hp - (damage - unit.defense); 
+		if(unit.hp <= 0){
 			return true; 
 		}
 		return false; 
 	}
 
 	public void Heal(int amount){
-		hp += amount; 
-		if(hp > maxHP){
-			hp = maxHP; 
+		unit.hp += amount; 
+		if(unit.hp > unit.maxHP){
+			unit.hp = unit.maxHP; 
 		}
 	}
 
 	public void GainSP(int amount){
-		sp += amount; 
-		if(sp > maxSP){
-			sp = maxSP; 
+		unit.sp += amount; 
+		if(unit.sp > unit.maxSP){
+			unit.sp = unit.maxSP; 
 		}
 	}
 }

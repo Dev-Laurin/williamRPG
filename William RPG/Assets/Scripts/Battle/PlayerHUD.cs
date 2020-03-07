@@ -12,11 +12,11 @@ public class PlayerHUD : MonoBehaviour {
 	public Image image; 
 
 	public void SetHUD(BattleUnit unit){
-		hpText.text = unit.hp + "/" + unit.maxHP; 
-		spText.text = unit.sp + "/" + unit.maxSP; 
-		hpSlider.value = unit.hp; 
-		hpSlider.maxValue = unit.maxHP; 
-		spSlider.value = unit.sp; 
-		spSlider.maxValue = unit.maxSP; 
+		hpText.text = unit.unit.hp + "/" + unit.unit.maxHP; 
+		spText.text = unit.unit.sp + "/" + unit.unit.maxSP; 
+		hpSlider.value = unit.unit.hp; 
+		hpSlider.maxValue = unit.unit.maxHP; 
+		spSlider.value = unit.unit.sp; 
+		spSlider.maxValue = unit.unit.maxSP; 
 	}
 }

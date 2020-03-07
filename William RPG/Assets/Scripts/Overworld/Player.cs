@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 public class Player : MonoBehaviour {
 
@@ -21,7 +22,11 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other){
 		Debug.Log("Collision -- Battle"); 
+		//transfer data to global game object 
+		Data.StoreCollidedEnemy(other.gameObject.GetComponent<Unit>()); 
+		Data.AddToPlayerParty(unit); 
 		//Go to next scene 
+		SceneManager.LoadScene("Battle"); 
 	}
 
 	void FixedUpdate(){

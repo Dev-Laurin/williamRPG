@@ -3,19 +3,33 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary; 
 using System.IO; 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour {
+	private Player player; 
 
-	private List<Player> players = new List<Player>(); 
-
-	// Use this for initialization
-	void Start () {
-
+	public Player GetPlayer(){
+		return player; 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public void SetPlayer(Player p){
+		player = p; 
+	}
+
+	void Start () {
+		DontDestroyOnLoad(this.gameObject); 
+		SceneManager.sceneLoaded += OnSceneLoaded; 
+		this.gameObject.SetActive(false); 
+	}
+
+	private void OnSceneLoaded(Scene scene, LoadSceneMode mode){
+		if(scene.name == "Title"){
+			SceneManager.sceneLoaded -= OnSceneLoaded; 
+			Destroy(this.gameObject); 
+		}
+		else{ //Battle scene 
+			this.gameObject.SetActive(scene.name == "Battle");
+		}
 	}
 
 	// private Save CreateSaveGameObject(){
