@@ -28,6 +28,15 @@ public static class Data {
 
 	}
 
+	public static void UpdatePlayerUnit(Unit unit){
+		int index = playerParty.FindIndex(u => u.name == unit.name); 
+		playerParty[index] = unit; 
+	}
+
+	public static void UpdatePlayerPartyStats(List<Unit> party){
+		playerParty = party; 
+	}
+
 	public static void UpdatePlayerPartyPos(Unit unit, int pos){
 		unit.partyPos = pos; 
 		SortPlayerParty(); 

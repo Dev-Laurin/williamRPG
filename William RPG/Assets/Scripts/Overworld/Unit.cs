@@ -21,6 +21,15 @@ public class Unit : MonoBehaviour {
 
 	//Position in the party. Drawing/following/battle place
 	public int partyPos; 
+	public bool isEnemy; 
+	public bool isPlayable;
+
+	public bool followPlayer;  
+	public GameObject player; 
+	public float FollowSpeed; 
+	public RaycastHit Shot; 
+	public float AllowedDistance = 1; 
+	public float TargetDistance; 
 
 	//Sprite Animations 
 	Animation walkLeft; 
@@ -53,6 +62,16 @@ public class Unit : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if(followPlayer){
+			TargetDistance = Vector3.Distance(transform.position, player.transform.position); 
+			if(TargetDistance >= AllowedDistance){
+				FollowSpeed = 0.1f; 
+				transform.position = Vector3.MoveTowards(transform.position, player.transform.position, FollowSpeed); 
+				
+			}
+			else{
+				FollowSpeed = 0; 
+			}
+		}
 	}
 }

@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
 		if(unit.rb == null){
 			Debug.LogError("Player::Start cant find Rigidbody2D </sadface>"); 
 		}
+		Data.AddToPlayerParty(unit); 
 	}
 	
 	// Update is called once per frame
@@ -22,11 +23,21 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other){
 		Debug.Log("Collision -- Battle"); 
-		//transfer data to global game object 
-		Data.StoreCollidedEnemy(other.gameObject.GetComponent<Unit>()); 
-		Data.AddToPlayerParty(unit); 
-		//Go to next scene 
-		SceneManager.LoadScene("Battle"); 
+		Unit collidedUnit = other.gameObject.GetComponent<Unit>(); 
+		if(collidedUnit.isEnemy){
+			//transfer data to global game object 
+			Data.StoreCollidedEnemy(collidedUnit); 
+			Data.UpdatePlayerUnit(unit); 
+			//Go to next scene 
+			SceneManager.LoadScene("Battle"); 
+		}
+		else if(collidedUnit.isPlayable){
+			//add them to the party 
+			Data.AddToPlayerParty(collidedUnit); 
+			Debug.Log("Added: " + collidedUnit.name + " to the party!"); 
+			collidedUnit.followPlayer = true; 
+		}
+		
 	}
 
 	void FixedUpdate(){
