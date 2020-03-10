@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq; 
 using UnityEngine;
 using UnityEngine.UI; 
 
@@ -41,6 +42,7 @@ public class BattleSystem : MonoBehaviour {
 
 	//the current unit's turn 
 	int currentUnitIndex; 
+	List<BattleUnit> currentTurns; //the list of who's going this round
 	List<BattleUnit> units; 
 
 	// Use this for initialization
@@ -69,13 +71,18 @@ public class BattleSystem : MonoBehaviour {
 		}
 	}
 
-	void SetTurnCarousel(List<Sprite> sprites){
+	void SetTurnCarousel(List<BattleUnit> u){
 		//loop through turnCarouselImages
-		int i = 0; 
-		for(var image : GameObject in turnCarousel){
-			image.sprite = sprites[i];  
+		int i = 0;  
+		// foreach(Image item in turnCarousel){
+		// 	item.sprite = u[i].battleHUDSprite;  
+		// 	i++; 
+		// }
+		foreach (Transform child in turnCarousel.transform) {
+			child.gameObject.GetComponent<Unit>().battleHUDSprite = u[i].unit.battleHUDSprite;  
 			i++; 
-		}
+    	}
+
 	}
 
 	IEnumerator SetupBattle(){
@@ -94,7 +101,7 @@ public class BattleSystem : MonoBehaviour {
 		for(int i=0; i<Party.Capacity; i++){
 			//set the first 4 players on the battlefield
 			GameObject playerObj = Instantiate(player, playerPositions[i]); 
-			playerUnit = playerObj.GetComponent<BattleUnit>(); 
+			BattleUnit playerUnit = playerObj.GetComponent<BattleUnit>(); 
 			playerUnit.SetStats(Party[i], true); 
 			players.Add(playerUnit); 
 			//set references to HUD (status bars with hp, etc) 
@@ -104,15 +111,12 @@ public class BattleSystem : MonoBehaviour {
 		//Setup Enemy Party 
 		for(int i=0; i<EnemyParty.Capacity; i++){
 			GameObject enemyObj = Instantiate(enemy, enemyPositions[i]); 
-			enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
+			BattleUnit enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
 			enemyUnit.SetStats(EnemyParty[i]); 
 			enemies.Add(enemyUnit); 
 			//set HUDS 
 
 		}
-
-		//dialogue beginning text 
-		dialogueText.text = "A wild " + enemyUnit.GetName() + " approaches..."; 
 
 		//wait for user to press enter to go to next text 
 		yield return waitForAnyKeyPress(); 
@@ -125,7 +129,7 @@ public class BattleSystem : MonoBehaviour {
 		} 
 		else{
 			state = BattleState.ENEMYTURN; 
-			EnemyTurn(false); 
+			EnemyTurn(); 
 		}
 		currentUnitIndex = 0;
 	}
@@ -133,7 +137,7 @@ public class BattleSystem : MonoBehaviour {
 	//returns list of who goes next based on character's speed
 	List<BattleUnit> getTurnOrder(){
 		//combine lists to compare speed 
-		List<BattleUnit> newList = players.Concat(enemies); 
+		var newList = players.Concat(enemies); 
 		//sort by speed 
 		return newList.OrderBy(s => s.GetSpeed()).ToList();  
 	}
@@ -142,7 +146,7 @@ public class BattleSystem : MonoBehaviour {
 		currentUnitIndex++; 
 		//if we already went through everyone's turn 
 		if(currentUnitIndex > units.Capacity){
-			getTurnOrder(); 
+			currentTurns = getTurnOrder(); 
 		}
 		else if(units[currentUnitIndex].isPlayer){
 			state = BattleState.PLAYERTURN;  
@@ -150,11 +154,10 @@ public class BattleSystem : MonoBehaviour {
 		} 
 		else{
 			state = BattleState.ENEMYTURN; 
-			EnemyTurn(false); 
+			EnemyTurn(); 
 		}
-		currentUnit = units[currentUnitIndex];
 		//update the carousel 
-		SetTurnCarousel(); 
+		SetTurnCarousel(currentTurns); 
 	}
 
 	void PlayerTurn(){
@@ -162,7 +165,7 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator PlayerAttack(){
-		bool isDead = enemyUnit.TakeDamage(player1Unit.unit.strength); 
+		bool isDead = target.TakeDamage(units[currentUnitIndex].unit.strength); 
 		dialogueText.text = "The attack was successful."; 
 		yield return waitForAnyKeyPress(); 
 		if(isDead){

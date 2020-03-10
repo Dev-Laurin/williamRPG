@@ -41,8 +41,8 @@ public class Unit : MonoBehaviour {
 	Animation battleIdle; 
 
 	//Sprites for HUDs 
-	Sprite mugshot; 
-	Sprite battleHUDSprite; 
+	public Sprite HUDSprite; 
+	public Sprite battleHUDSprite; 
 
 	public Unit(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 
