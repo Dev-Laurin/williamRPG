@@ -18,6 +18,7 @@ public class Unit : MonoBehaviour {
 	public int level; 
 	public int defense; 
 	public int strength;
+	public int speed; 
 
 	//Position in the party. Drawing/following/battle place
 	public int partyPos; 
@@ -38,6 +39,10 @@ public class Unit : MonoBehaviour {
 	Animation walkDown; 
 
 	Animation battleIdle; 
+
+	//Sprites for HUDs 
+	Sprite mugshot; 
+	Sprite battleHUDSprite; 
 
 	public Unit(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 

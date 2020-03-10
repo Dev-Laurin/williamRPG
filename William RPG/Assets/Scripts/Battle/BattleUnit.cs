@@ -5,6 +5,8 @@ using UnityEngine;
 public class BattleUnit : MonoBehaviour {
 
 	public Unit unit; 
+	public bool isPlayer; 
+	public bool isDodging; 
 
 	// Use this for initialization
 	void Start () {
@@ -17,8 +19,18 @@ public class BattleUnit : MonoBehaviour {
 		
 	}
 
-	public void SetStats(Unit u){
+	public string GetName(){
+		return unit.name; 
+	}
+
+	//get the current speed, including status effects 
+	public int GetSpeed(){
+		return unit.speed; 
+	}
+
+	public void SetStats(Unit u, bool isP = false){
 		unit = u; 
+		isPlayer = isP; 
 	}
 
 	public bool TakeDamage(int damage){

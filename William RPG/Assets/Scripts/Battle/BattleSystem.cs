@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; 
 
-public enum BattleState {START, PLAYER1TURN, PLAYER2TURN, 
-	PLAYER3TURN, PLAYER4TURN, ENEMYTURN, WON, LOST}
+public enum BattleState {START, PLAYERTURN, ENEMYTURN, 
+	WON, LOST}
 
 public class BattleSystem : MonoBehaviour {
 
-	public GameObject player1; 
+	public GameObject player; 
 	public GameObject enemy; 
 
-	BattleUnit player1Unit; 
-	BattleUnit enemyUnit; 
+	List<BattleUnit> players = new List<BattleUnit>(); 
+	List<Transform> playerPositions = new List<Transform>();
+	List<PlayerHUD> playerHUDs = new List<PlayerHUD>();
+
+	List<Transform> enemyPositions = new List<Transform>(); 
+	List<BattleUnit> enemies = new List<BattleUnit>(); 
 
 	public BattleState state; 
 
@@ -25,7 +29,19 @@ public class BattleSystem : MonoBehaviour {
 
 	public Text dialogueText; 
 
-	public PlayerHUD player1HUD;  
+	public PlayerHUD player1HUD; 
+	public PlayerHUD player2HUD;
+	public PlayerHUD player3HUD;
+	public PlayerHUD player4HUD; 
+
+	public GameObject turnCarousel; 
+
+	List<Unit>Party = Data.GetPlayerParty();
+	List<Unit>EnemyParty = Data.GetEnemyParty(); 
+
+	//the current unit's turn 
+	int currentUnitIndex; 
+	List<BattleUnit> units; 
 
 	// Use this for initialization
 	void Start () {
@@ -53,29 +69,92 @@ public class BattleSystem : MonoBehaviour {
 		}
 	}
 
-	IEnumerator SetupBattle(){
-		//put the players and enemies in their spots 
-		GameObject player1Obj = Instantiate(player1, playerPos1); 
-		player1Unit = player1Obj.GetComponent<BattleUnit>(); 
-		//set the sprite, stats, from Data object 
-		player1Unit.SetStats(Data.GetPlayerParty()[0]); 
+	void SetTurnCarousel(List<Sprite> sprites){
+		//loop through turnCarouselImages
+		int i = 0; 
+		for(var image : GameObject in turnCarousel){
+			image.sprite = sprites[i];  
+			i++; 
+		}
+	}
 
-		GameObject enemyObj = Instantiate(enemy, enemyPos1); 
-		enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
-		enemyUnit.SetStats(Data.GetEnemyParty()[0]); 
+	IEnumerator SetupBattle(){
+		
+		playerPositions.Add(playerPos1); 
+		playerPositions.Add(playerPos2); 
+		playerPositions.Add(playerPos3);
+		playerPositions.Add(playerPos4); 
+ 
+		playerHUDs.Add(player1HUD); 
+		playerHUDs.Add(player2HUD); 
+		playerHUDs.Add(player3HUD); 
+		playerHUDs.Add(player4HUD); 
+
+		//Setup Player Party  
+		for(int i=0; i<Party.Capacity; i++){
+			//set the first 4 players on the battlefield
+			GameObject playerObj = Instantiate(player, playerPositions[i]); 
+			playerUnit = playerObj.GetComponent<BattleUnit>(); 
+			playerUnit.SetStats(Party[i], true); 
+			players.Add(playerUnit); 
+			//set references to HUD (status bars with hp, etc) 
+			playerHUDs[i].SetHUD(playerUnit); 
+		}
+
+		//Setup Enemy Party 
+		for(int i=0; i<EnemyParty.Capacity; i++){
+			GameObject enemyObj = Instantiate(enemy, enemyPositions[i]); 
+			enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
+			enemyUnit.SetStats(EnemyParty[i]); 
+			enemies.Add(enemyUnit); 
+			//set HUDS 
+
+		}
 
 		//dialogue beginning text 
-		dialogueText.text = "A wild " + enemyUnit.unit.name + " approaches..."; 
-
-		//set references to HUD (status bars with hp, etc)
-		player1HUD.SetHUD(player1Unit); 
+		dialogueText.text = "A wild " + enemyUnit.GetName() + " approaches..."; 
 
 		//wait for user to press enter to go to next text 
 		yield return waitForAnyKeyPress(); 
 
-		//change the state 
-		state = BattleState.PLAYER1TURN; 
-		PlayerTurn(); 
+		//change the state
+		units = getTurnOrder(); 
+		if(units[0].isPlayer){
+			state = BattleState.PLAYERTURN;  
+			PlayerTurn(); 
+		} 
+		else{
+			state = BattleState.ENEMYTURN; 
+			EnemyTurn(false); 
+		}
+		currentUnitIndex = 0;
+	}
+
+	//returns list of who goes next based on character's speed
+	List<BattleUnit> getTurnOrder(){
+		//combine lists to compare speed 
+		List<BattleUnit> newList = players.Concat(enemies); 
+		//sort by speed 
+		return newList.OrderBy(s => s.GetSpeed()).ToList();  
+	}
+
+	void SetupNextTurn(){
+		currentUnitIndex++; 
+		//if we already went through everyone's turn 
+		if(currentUnitIndex > units.Capacity){
+			getTurnOrder(); 
+		}
+		else if(units[currentUnitIndex].isPlayer){
+			state = BattleState.PLAYERTURN;  
+			PlayerTurn(); 
+		} 
+		else{
+			state = BattleState.ENEMYTURN; 
+			EnemyTurn(false); 
+		}
+		currentUnit = units[currentUnitIndex];
+		//update the carousel 
+		SetTurnCarousel(); 
 	}
 
 	void PlayerTurn(){
@@ -91,28 +170,28 @@ public class BattleSystem : MonoBehaviour {
 			EndBattle(); 
 		}
 		else{
-			state = BattleState.ENEMYTURN; 
-			StartCoroutine(EnemyTurn(false)); 
+			SetupNextTurn(); 
 		}
+		
 	}
 
 	IEnumerator PlayerHeal(){
 		player1Unit.Heal(5); 
 		player1HUD.SetHUD(player1Unit); 
 		dialogueText.text = "You feel revived."; 
-		yield return waitForAnyKeyPress(); 
-		state = BattleState.ENEMYTURN; 
-		StartCoroutine(EnemyTurn(false)); 
+		yield return waitForAnyKeyPress();
+
+		SetupNextTurn(); 
+		SetupNextTurn();  
 	}
 
 	IEnumerator PlayerDodge(){
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
 		yield return waitForAnyKeyPress(); 
-		state = BattleState.ENEMYTURN; 
-		StartCoroutine(EnemyTurn(true)); 
+		SetupNextTurn(); 
 	}
 
-	IEnumerator EnemyTurn(bool dodging){
+	IEnumerator EnemyTurn(){
 
 		dialogueText.text = enemyUnit.name + " attacks."; 
 		yield return waitForAnyKeyPress();  
@@ -135,10 +214,8 @@ public class BattleSystem : MonoBehaviour {
 			EndBattle(); 
 		}
 		else{
-			state = BattleState.PLAYER1TURN; 
-			PlayerTurn(); 
+			SetupNextTurn(); 
 		}
-
 	}
 
 	void EndBattle(){
@@ -151,7 +228,7 @@ public class BattleSystem : MonoBehaviour {
 
 	public void OnAttackButton(){
 		
-		if(state != BattleState.PLAYER1TURN){
+		if(state != BattleState.PLAYERTURN){
 			return; 
 		}
 
@@ -160,7 +237,7 @@ public class BattleSystem : MonoBehaviour {
 	
 	public void OnHealButton(){
 		
-		if(state != BattleState.PLAYER1TURN){
+		if(state != BattleState.PLAYERTURN){
 			return; 
 		}
 
@@ -169,7 +246,7 @@ public class BattleSystem : MonoBehaviour {
 	
 	public void OnDodgeButton(){
 		
-		if(state != BattleState.PLAYER1TURN){
+		if(state != BattleState.PLAYERTURN){
 			return; 
 		}
 
