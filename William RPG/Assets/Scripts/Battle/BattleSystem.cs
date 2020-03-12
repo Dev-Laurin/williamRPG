@@ -27,6 +27,10 @@ public class BattleSystem : MonoBehaviour {
 	public Transform playerPos3; 
 	public Transform playerPos4; 
 	public Transform enemyPos1;
+	public Transform enemyPos2; 
+	public Transform enemyPos3;
+	public Transform enemyPos4;
+	public Transform enemyPos5;
 
 	public Text dialogueText; 
 
@@ -44,6 +48,10 @@ public class BattleSystem : MonoBehaviour {
 	int currentUnitIndex; 
 	List<BattleUnit> currentTurns; //the list of who's going this round
 	List<BattleUnit> units; 
+
+	public GameObject targetIdentifier; 
+	bool chooseTarget; //is player choosing a target?
+	int targetPos; //position in battlestation array
 
 	// Use this for initialization
 	void Start () {
@@ -160,9 +168,60 @@ public class BattleSystem : MonoBehaviour {
 		SetTurnCarousel(currentTurns); 
 	}
 
-	void PlayerTurn(){
-		dialogueText.text = "Choose an action."; 
+	bool IsMiddleTarget(){
+		//is our targetPos a middle target? 
+		return (targetPos - 2) % 3 == 0; 
 	}
+
+	//vDir = 0 -- not diagonal
+	//move the target to specific battlestations to select an enemy
+	void moveTargetIdentifier(int hDir, int vDir){ //-1 for left 1 for right
+		if(IsMiddleTarget()){
+			//go to next object based on diagonal
+			if(vDir == -1 && hDir == 1 || vDir == 1 && hDir == -1){
+				//down right or up left 
+				targetPos += hDir * 2; 
+			}
+			else{
+				targetPos += hDir; 
+			}
+		}
+		else{
+			//check if we are top or bottom 
+			if(targetPos % 3 == 0){
+				//we are the top 
+				targetPos += hDir * 2; //skip
+			}
+			else{
+				//we are the bottom 
+				targetPos += hDir; //next 
+			}
+		}
+		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, Battlestations[targetPos].transform.position, 0.5f); 
+	}
+
+	void Update(){
+		//cycle through the enemy targets with left 
+		//and right arrows
+		if(state == BattleState.PLAYERTURN && chooseTarget){
+			moveTargetIdentifier(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); 
+			if(Input.GetKey(KeyCode.enter)){
+				//set the target 
+				Debug.Log("Chose " + targetPos); 
+				//deactivate the target object -- the player is done choosing
+				targetIdentifier.setActive(false); 
+			}
+		}
+		
+	}
+
+	void PlayerTurn(){
+		dialogueText.text = "Choose a target.";
+		//set target over enemy battlestation 1
+		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPos1, 0.5f);
+		targetIdentifier.setActive(true); 
+	}
+
 
 	IEnumerator PlayerAttack(){
 		bool isDead = target.TakeDamage(units[currentUnitIndex].unit.strength); 
@@ -195,7 +254,6 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator EnemyTurn(){
-
 		dialogueText.text = enemyUnit.name + " attacks."; 
 		yield return waitForAnyKeyPress();  
 
