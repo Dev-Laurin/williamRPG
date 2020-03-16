@@ -13,31 +13,32 @@ public class BattleSystem : MonoBehaviour {
 	public GameObject enemy; 
 
 	List<BattleUnit> players = new List<BattleUnit>(); 
-	List<Transform> playerPositions = new List<Transform>();
-	List<PlayerHUD> playerHUDs = new List<PlayerHUD>();
+	
+	//Battle positions
+	static public Transform playerPos1; 
+	static public Transform playerPos2; 
+	static public Transform playerPos3; 
+	static public Transform playerPos4; 
+	public List<Transform> playerPositions = new List<Transform>{playerPos1, playerPos2, playerPos3, playerPos4};
+	
+	static public PlayerHUD player1HUD; 
+	static public PlayerHUD player2HUD;
+	static public PlayerHUD player3HUD;
+	static public PlayerHUD player4HUD; 
+	public List<PlayerHUD> playerHUDs = new List<PlayerHUD>{player1HUD, player2HUD, player3HUD, player4HUD};
 
-	List<Transform> enemyPositions = new List<Transform>(); 
+	static public Transform enemyPos1;
+	static public Transform enemyPos2; 
+	static public Transform enemyPos3;
+	static public Transform enemyPos4;
+	static public Transform enemyPos5;
+	List<Transform> enemyPositions = new List<Transform>{enemyPos1, enemyPos2, enemyPos3, enemyPos4, enemyPos5}; 
+	//enemies = organized by battlestation position
 	List<BattleUnit> enemies = new List<BattleUnit>(); 
 
 	public BattleState state; 
 
-	//Battle positions
-	public Transform playerPos1; 
-	public Transform playerPos2; 
-	public Transform playerPos3; 
-	public Transform playerPos4; 
-	public Transform enemyPos1;
-	public Transform enemyPos2; 
-	public Transform enemyPos3;
-	public Transform enemyPos4;
-	public Transform enemyPos5;
-
 	public Text dialogueText; 
-
-	public PlayerHUD player1HUD; 
-	public PlayerHUD player2HUD;
-	public PlayerHUD player3HUD;
-	public PlayerHUD player4HUD; 
 
 	public GameObject turnCarousel; 
 
@@ -56,6 +57,9 @@ public class BattleSystem : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		state = BattleState.START;
+		//hide target identifier
+		targetIdentifier.SetActive(false); 
+		Party = Data.GetPlayerParty();
 		StartCoroutine(SetupBattle());  
 	}
 
@@ -94,22 +98,13 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator SetupBattle(){
-		
-		playerPositions.Add(playerPos1); 
-		playerPositions.Add(playerPos2); 
-		playerPositions.Add(playerPos3);
-		playerPositions.Add(playerPos4); 
- 
-		playerHUDs.Add(player1HUD); 
-		playerHUDs.Add(player2HUD); 
-		playerHUDs.Add(player3HUD); 
-		playerHUDs.Add(player4HUD); 
 
 		//Setup Player Party  
-		for(int i=0; i<Party.Capacity; i++){
+		for(int i=0; i<Party.Count; i++){
 			//set the first 4 players on the battlefield
 			GameObject playerObj = Instantiate(player, playerPositions[i]); 
 			BattleUnit playerUnit = playerObj.GetComponent<BattleUnit>(); 
+			Debug.Log(Party.Count); 
 			playerUnit.SetStats(Party[i], true); 
 			players.Add(playerUnit); 
 			//set references to HUD (status bars with hp, etc) 
@@ -117,7 +112,7 @@ public class BattleSystem : MonoBehaviour {
 		}
 
 		//Setup Enemy Party 
-		for(int i=0; i<EnemyParty.Capacity; i++){
+		for(int i=0; i<EnemyParty.Count; i++){
 			GameObject enemyObj = Instantiate(enemy, enemyPositions[i]); 
 			BattleUnit enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
 			enemyUnit.SetStats(EnemyParty[i]); 
@@ -153,7 +148,7 @@ public class BattleSystem : MonoBehaviour {
 	void SetupNextTurn(){
 		currentUnitIndex++; 
 		//if we already went through everyone's turn 
-		if(currentUnitIndex > units.Capacity){
+		if(currentUnitIndex > units.Count){
 			currentTurns = getTurnOrder(); 
 		}
 		else if(units[currentUnitIndex].isPlayer){
@@ -197,33 +192,44 @@ public class BattleSystem : MonoBehaviour {
 				targetPos += hDir; //next 
 			}
 		}
-		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, Battlestations[targetPos].transform.position, 0.5f); 
+		if(targetPos < 0) targetPos = 0; 
+		if(targetPos >= enemyPositions.Count) targetPos = enemyPositions.Count - 1;
+		Debug.Log("Target Position Index: " + targetPos); 
+		Debug.Log("Our pos: " + targetIdentifier.transform.position); 
+		Debug.Log("Target pos: " + enemyPositions[targetPos].transform.position);
+		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[targetPos].transform.position, 0.5f); 
 	}
 
-	void Update(){
+	void FixedUpdate(){
 		//cycle through the enemy targets with left 
 		//and right arrows
 		if(state == BattleState.PLAYERTURN && chooseTarget){
-			moveTargetIdentifier(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); 
-			if(Input.GetKey(KeyCode.enter)){
+			moveTargetIdentifier((int)Input.GetAxis("Horizontal"), (int)Input.GetAxis("Vertical")); 
+			if(Input.GetKey(KeyCode.Return)){
 				//set the target 
 				Debug.Log("Chose " + targetPos); 
 				//deactivate the target object -- the player is done choosing
-				targetIdentifier.setActive(false); 
+				targetIdentifier.SetActive(false); 
+				chooseTarget = false; 
 			}
 		}
 		
 	}
 
 	void PlayerTurn(){
-		dialogueText.text = "Choose a target.";
+		dialogueText.text = "Choose an action.";
 		//set target over enemy battlestation 1
-		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPos1, 0.5f);
-		targetIdentifier.setActive(true); 
+		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPos1.transform.position, 0.5f);
+		targetIdentifier.SetActive(true); 
 	}
 
 
 	IEnumerator PlayerAttack(){
+		chooseTarget = true;
+		//wait for target to be chosen via Update func
+		yield return new WaitUntil(() => chooseTarget == false); 
+		//attack target 
+		var target = enemies[targetPos]; 
 		bool isDead = target.TakeDamage(units[currentUnitIndex].unit.strength); 
 		dialogueText.text = "The attack was successful."; 
 		yield return waitForAnyKeyPress(); 
@@ -238,13 +244,12 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator PlayerHeal(){
-		player1Unit.Heal(5); 
-		player1HUD.SetHUD(player1Unit); 
+		var p = units[currentUnitIndex]; 
+		p.Heal(5); 
+		p.SetHUD(); 
 		dialogueText.text = "You feel revived."; 
 		yield return waitForAnyKeyPress();
-
 		SetupNextTurn(); 
-		SetupNextTurn();  
 	}
 
 	IEnumerator PlayerDodge(){
@@ -254,20 +259,13 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator EnemyTurn(){
-		dialogueText.text = enemyUnit.name + " attacks."; 
+		dialogueText.text = units[currentUnitIndex].GetName() + " attacks."; 
 		yield return waitForAnyKeyPress();  
 
-		bool isDead = false; 
-		if(dodging){
-			//player doesn't take damage 
-			dialogueText.text = "You moved out of the way.";  
-		}
-		else{
-			isDead = player1Unit.TakeDamage(enemyUnit.unit.strength); 
-			player1HUD.SetHUD(player1Unit); 
-
-			dialogueText.text = "You were hit."; 
-		}
+		//choose a target 
+		BattleUnit target = players[Random.Range(0, players.Count - 1)]; 
+		bool isDead = target.TakeDamage(units[currentUnitIndex].unit.strength);  
+		dialogueText.text = "You were hit."; 
 
 		yield return waitForAnyKeyPress(); 
 		if(isDead){

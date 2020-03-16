@@ -54,4 +54,8 @@ public class BattleUnit : MonoBehaviour {
 			unit.sp = unit.maxSP; 
 		}
 	}
+
+	public void SetHUD(){
+		
+	}
 }
