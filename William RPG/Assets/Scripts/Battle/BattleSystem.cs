@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement; 
 
-public enum BattleState {START, PLAYERTURN, ENEMYTURN, 
+public enum BattleState {START, PLAYERTURN, PLAYERTURNEND, ENEMYTURN, 
 	WON, LOST}
 
 public class BattleSystem : MonoBehaviour {
@@ -107,10 +107,10 @@ public class BattleSystem : MonoBehaviour {
 		for(int i=0; i<EnemyParty.Count; i++){
 			GameObject enemyObj = Instantiate(enemy, enemyPositions[i]); 
 			BattleUnit enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
-			enemyUnit.SetStats(EnemyParty[i]); 
+			enemyUnit.SetStats(EnemyParty[i], playerHUDs[3]); //change the HUD
 			enemies.Add(enemyUnit); 
 			//set HUDS 
-
+			
 		}
 
 		//wait for user to press enter to go to next text 
@@ -131,9 +131,7 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator SetupNextTurn(){
-		Debug.Log("Setup turn"); 
-		Debug.Log("current unit index: " + currentUnitIndex); 
-
+		Debug.Log("Unit index: " + currentUnitIndex); 
 		//if all the enemies are dead or if all the players are KO'd = end battle
 		int dead = 0; 
 		for(int i=0; i<players.Count; i++){
@@ -160,24 +158,20 @@ public class BattleSystem : MonoBehaviour {
 		if(currentUnitIndex >= units.Count){
 			units = getTurnOrder(); 
 			currentUnitIndex = 0; 
+			Debug.Log("Next Round."); 
 		}
 		
 		if(units[currentUnitIndex].isPlayer){
 			state = BattleState.PLAYERTURN;  
 			Debug.Log("Player turn"); 
 			optionsMenu.SetActive(true); 
-			PlayerTurn(); //need to yield / setup turns
-			yield; 
-			currentUnitIndex++; 
+			PlayerTurn(); //need to yield / setup turns; 
 		} 
 		else{
 			state = BattleState.ENEMYTURN; 
 			Debug.Log("Enemy turn."); 
-			yield return EnemyTurn(); 
-			currentUnitIndex++; 
+			yield return StartCoroutine(EnemyTurn()); 
 		}
-		//update the carousel 
-		SetTurnCarousel(units);
 	}
 
 	bool IsMiddleTarget(){
@@ -242,14 +236,11 @@ public class BattleSystem : MonoBehaviour {
 		//wait for target to be chosen via Update func
 		yield return new WaitUntil(() => chooseTarget == false); 
 		//attack target 
-		Debug.Log("target pos: " + targetPos); 
 		var target = enemies[targetPos]; 
-		Debug.Log("current unit index: " + currentUnitIndex); 
 		target.TakeDamage(units[currentUnitIndex].unit.strength); 
 		dialogueText.text = "The attack was successful."; 
 		yield return waitForAnyKeyPress(); 
-		optionsMenu.SetActive(false);
-		StartCoroutine(SetupNextTurn());
+		yield return StartCoroutine(EndPlayerTurn()); 
 	}
 
 	IEnumerator PlayerHeal(){
@@ -258,15 +249,24 @@ public class BattleSystem : MonoBehaviour {
 		p.SetHUD(); 
 		dialogueText.text = "You feel revived."; 
 		yield return waitForAnyKeyPress();
+		yield return StartCoroutine(EndPlayerTurn());  
+	}
+
+	IEnumerator EndPlayerTurn(){
 		optionsMenu.SetActive(false);
+		state = BattleState.PLAYERTURNEND; 
+		//wait for coroutine to end for a frame 
+		yield return null; 
+		currentUnitIndex++; 
+		//update the carousel 
+		SetTurnCarousel(units);
 		StartCoroutine(SetupNextTurn());
 	}
 
 	IEnumerator PlayerDodge(){
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
 		yield return waitForAnyKeyPress(); 
-		optionsMenu.SetActive(false);
-		StartCoroutine(SetupNextTurn());
+		yield return StartCoroutine(EndPlayerTurn());  
 	}
 
 	IEnumerator EnemyTurn(){
@@ -277,6 +277,9 @@ public class BattleSystem : MonoBehaviour {
 		target.TakeDamage(units[currentUnitIndex].unit.strength);  
 		dialogueText.text = "You were hit."; 
 		yield return waitForAnyKeyPress();
+		currentUnitIndex++; 
+		//update the carousel 
+		SetTurnCarousel(units);
 		StartCoroutine(SetupNextTurn());
 	}
 
