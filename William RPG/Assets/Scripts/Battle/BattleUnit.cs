@@ -36,6 +36,7 @@ public class BattleUnit : MonoBehaviour {
 		unit.hp = unit.hp - (damage - unit.defense); 
 		if(unit.hp <= 0){
 			isDead = true; 
+			Debug.Log("Is dead"); 
 		}
 		isDead = false; 
 		SetHUD(); 
