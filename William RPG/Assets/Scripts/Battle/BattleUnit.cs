@@ -7,7 +7,6 @@ public class BattleUnit : MonoBehaviour {
 	public Unit unit; 
 	public bool isPlayer; 
 	public bool isDodging; 
-	public bool isDead; 
 
 	PlayerHUD HUD; 
 
@@ -35,10 +34,8 @@ public class BattleUnit : MonoBehaviour {
 	public void TakeDamage(int damage){
 		unit.hp = unit.hp - (damage - unit.defense); 
 		if(unit.hp <= 0){
-			isDead = true; 
-			Debug.Log("Is dead"); 
+			unit.hp = 0; 
 		}
-		isDead = false; 
 		SetHUD(); 
 	}
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement; 
 
-public enum BattleState {START, PLAYERTURN, PLAYERTURNEND, ENEMYTURN, 
+public enum BattleState {START, PLAYERTURN, ENEMYTURN, 
 	WON, LOST}
 
 public class BattleSystem : MonoBehaviour {
@@ -131,11 +131,10 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	void SetupNextTurn(){
-		Debug.Log("Unit index: " + currentUnitIndex); 
 		//if all the enemies are dead or if all the players are KO'd = end battle
 		int dead = 0; 
 		for(int i=0; i<players.Count; i++){
-			if(players[i].isDead) dead++;  
+			if(players[i].GetHP() <= 0) dead++;  
 		}
 		if(dead == players.Count){
 			//Game Over 
@@ -143,35 +142,30 @@ public class BattleSystem : MonoBehaviour {
 			StartCoroutine(EndBattle()); 
 			return; 
 		}
-		Debug.Log("Players dead: " + dead); 
 		//if all the enemies are dead 
 		dead = 0; 
 		for(int i=0; i<enemies.Count; i++){
-			if(enemies[i].isDead) dead++; 
+			if(enemies[i].GetHP() <= 0) dead++; 
 		}
 		if(dead == enemies.Count){
 			state = BattleState.WON; 
 			StartCoroutine(EndBattle());
 			return; 
 		}
-		Debug.Log("enemies dead: " + dead); 
 
 		//if we already went through everyone's turn 
 		if(currentUnitIndex >= units.Count){
 			units = getTurnOrder(); 
 			currentUnitIndex = 0; 
-			Debug.Log("Next Round."); 
 		}
 		
 		if(units[currentUnitIndex].isPlayer){
 			state = BattleState.PLAYERTURN;  
-			Debug.Log("Player turn"); 
 			optionsMenu.SetActive(true); 
 			PlayerTurn();
 		} 
 		else{
 			state = BattleState.ENEMYTURN; 
-			Debug.Log("Enemy turn."); 
 			StartCoroutine(EnemyTurn()); 
 		}
 	}
@@ -279,7 +273,6 @@ public class BattleSystem : MonoBehaviour {
 		currentUnitIndex++; 
 		//update the carousel 
 		SetTurnCarousel(units);
-		Debug.Log("Ending enemy turn."); 
 		SetupNextTurn();
 	}
 
