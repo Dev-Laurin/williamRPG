@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq; 
 using UnityEngine;
 using UnityEngine.UI; 
+using UnityEngine.SceneManagement; 
 
 public enum BattleState {START, PLAYERTURN, ENEMYTURN, 
 	WON, LOST}
@@ -15,24 +16,12 @@ public class BattleSystem : MonoBehaviour {
 	List<BattleUnit> players = new List<BattleUnit>(); 
 	
 	//Battle positions
-	static public Transform playerPos1; 
-	static public Transform playerPos2; 
-	static public Transform playerPos3; 
-	static public Transform playerPos4; 
-	public List<Transform> playerPositions = new List<Transform>{playerPos1, playerPos2, playerPos3, playerPos4};
+	public List<Transform> playerPositions;
 	
-	static public PlayerHUD player1HUD; 
-	static public PlayerHUD player2HUD;
-	static public PlayerHUD player3HUD;
-	static public PlayerHUD player4HUD; 
-	public List<PlayerHUD> playerHUDs = new List<PlayerHUD>{player1HUD, player2HUD, player3HUD, player4HUD};
+	public Sprite defaultTurnImage; 
+	public List<PlayerHUD> playerHUDs;
 
-	static public Transform enemyPos1;
-	static public Transform enemyPos2; 
-	static public Transform enemyPos3;
-	static public Transform enemyPos4;
-	static public Transform enemyPos5;
-	List<Transform> enemyPositions = new List<Transform>{enemyPos1, enemyPos2, enemyPos3, enemyPos4, enemyPos5}; 
+	public List<Transform> enemyPositions;
 	//enemies = organized by battlestation position
 	List<BattleUnit> enemies = new List<BattleUnit>(); 
 
@@ -47,12 +36,13 @@ public class BattleSystem : MonoBehaviour {
 
 	//the current unit's turn 
 	int currentUnitIndex; 
-	List<BattleUnit> currentTurns; //the list of who's going this round
 	List<BattleUnit> units; 
 
 	public GameObject targetIdentifier; 
 	bool chooseTarget; //is player choosing a target?
 	int targetPos; //position in battlestation array
+
+	public GameObject optionsMenu; 
 
 	// Use this for initialization
 	void Start () {
@@ -91,10 +81,14 @@ public class BattleSystem : MonoBehaviour {
 		// 	i++; 
 		// }
 		foreach (Transform child in turnCarousel.transform) {
-			child.gameObject.GetComponent<Unit>().battleHUDSprite = u[i].unit.battleHUDSprite;  
+			if(i >= u.Count){
+				child.gameObject.GetComponent<Image>().sprite = defaultTurnImage; 	
+			} 
+			else{
+				child.gameObject.GetComponent<Image>().sprite = u[i].unit.battleHUDSprite;  
+			}
 			i++; 
     	}
-
 	}
 
 	IEnumerator SetupBattle(){
@@ -104,11 +98,9 @@ public class BattleSystem : MonoBehaviour {
 			//set the first 4 players on the battlefield
 			GameObject playerObj = Instantiate(player, playerPositions[i]); 
 			BattleUnit playerUnit = playerObj.GetComponent<BattleUnit>(); 
-			Debug.Log(Party.Count); 
-			playerUnit.SetStats(Party[i], true); 
+			playerUnit.SetStats(Party[i], playerHUDs[i], true); 
 			players.Add(playerUnit); 
-			//set references to HUD (status bars with hp, etc) 
-			playerHUDs[i].SetHUD(playerUnit); 
+
 		}
 
 		//Setup Enemy Party 
@@ -125,16 +117,9 @@ public class BattleSystem : MonoBehaviour {
 		yield return waitForAnyKeyPress(); 
 
 		//change the state
-		units = getTurnOrder(); 
-		if(units[0].isPlayer){
-			state = BattleState.PLAYERTURN;  
-			PlayerTurn(); 
-		} 
-		else{
-			state = BattleState.ENEMYTURN; 
-			EnemyTurn(); 
-		}
+		units = getTurnOrder();
 		currentUnitIndex = 0;
+		StartCoroutine(SetupNextTurn()); 
 	}
 
 	//returns list of who goes next based on character's speed
@@ -145,22 +130,54 @@ public class BattleSystem : MonoBehaviour {
 		return newList.OrderBy(s => s.GetSpeed()).ToList();  
 	}
 
-	void SetupNextTurn(){
-		currentUnitIndex++; 
-		//if we already went through everyone's turn 
-		if(currentUnitIndex > units.Count){
-			currentTurns = getTurnOrder(); 
+	IEnumerator SetupNextTurn(){
+		Debug.Log("Setup turn"); 
+		Debug.Log("current unit index: " + currentUnitIndex); 
+
+		//if all the enemies are dead or if all the players are KO'd = end battle
+		int dead = 0; 
+		for(int i=0; i<players.Count; i++){
+			if(players[i].isDead) dead++;  
 		}
-		else if(units[currentUnitIndex].isPlayer){
+		if(dead == players.Count){
+			//Game Over 
+			state = BattleState.LOST; 
+			yield return EndBattle(); 
+			yield break; 
+		}
+		//if all the enemies are dead 
+		dead = 0; 
+		for(int i=0; i<enemies.Count; i++){
+			if(enemies[i].isDead) dead++; 
+		}
+		if(dead == enemies.Count){
+			state = BattleState.WON; 
+			yield return EndBattle();
+			yield break; 
+		}
+
+		//if we already went through everyone's turn 
+		if(currentUnitIndex >= units.Count){
+			units = getTurnOrder(); 
+			currentUnitIndex = 0; 
+		}
+		
+		if(units[currentUnitIndex].isPlayer){
 			state = BattleState.PLAYERTURN;  
-			PlayerTurn(); 
+			Debug.Log("Player turn"); 
+			optionsMenu.SetActive(true); 
+			PlayerTurn(); //need to yield / setup turns
+			yield; 
+			currentUnitIndex++; 
 		} 
 		else{
 			state = BattleState.ENEMYTURN; 
-			EnemyTurn(); 
+			Debug.Log("Enemy turn."); 
+			yield return EnemyTurn(); 
+			currentUnitIndex++; 
 		}
 		//update the carousel 
-		SetTurnCarousel(currentTurns); 
+		SetTurnCarousel(units);
 	}
 
 	bool IsMiddleTarget(){
@@ -194,9 +211,6 @@ public class BattleSystem : MonoBehaviour {
 		}
 		if(targetPos < 0) targetPos = 0; 
 		if(targetPos >= enemyPositions.Count) targetPos = enemyPositions.Count - 1;
-		Debug.Log("Target Position Index: " + targetPos); 
-		Debug.Log("Our pos: " + targetIdentifier.transform.position); 
-		Debug.Log("Target pos: " + enemyPositions[targetPos].transform.position);
 		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[targetPos].transform.position, 0.5f); 
 	}
 
@@ -207,7 +221,6 @@ public class BattleSystem : MonoBehaviour {
 			moveTargetIdentifier((int)Input.GetAxis("Horizontal"), (int)Input.GetAxis("Vertical")); 
 			if(Input.GetKey(KeyCode.Return)){
 				//set the target 
-				Debug.Log("Chose " + targetPos); 
 				//deactivate the target object -- the player is done choosing
 				targetIdentifier.SetActive(false); 
 				chooseTarget = false; 
@@ -219,7 +232,7 @@ public class BattleSystem : MonoBehaviour {
 	void PlayerTurn(){
 		dialogueText.text = "Choose an action.";
 		//set target over enemy battlestation 1
-		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPos1.transform.position, 0.5f);
+		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[0].transform.position, 0.5f);
 		targetIdentifier.SetActive(true); 
 	}
 
@@ -229,18 +242,14 @@ public class BattleSystem : MonoBehaviour {
 		//wait for target to be chosen via Update func
 		yield return new WaitUntil(() => chooseTarget == false); 
 		//attack target 
+		Debug.Log("target pos: " + targetPos); 
 		var target = enemies[targetPos]; 
-		bool isDead = target.TakeDamage(units[currentUnitIndex].unit.strength); 
+		Debug.Log("current unit index: " + currentUnitIndex); 
+		target.TakeDamage(units[currentUnitIndex].unit.strength); 
 		dialogueText.text = "The attack was successful."; 
 		yield return waitForAnyKeyPress(); 
-		if(isDead){
-			state = BattleState.WON; 
-			EndBattle(); 
-		}
-		else{
-			SetupNextTurn(); 
-		}
-		
+		optionsMenu.SetActive(false);
+		StartCoroutine(SetupNextTurn());
 	}
 
 	IEnumerator PlayerHeal(){
@@ -249,39 +258,36 @@ public class BattleSystem : MonoBehaviour {
 		p.SetHUD(); 
 		dialogueText.text = "You feel revived."; 
 		yield return waitForAnyKeyPress();
-		SetupNextTurn(); 
+		optionsMenu.SetActive(false);
+		StartCoroutine(SetupNextTurn());
 	}
 
 	IEnumerator PlayerDodge(){
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
 		yield return waitForAnyKeyPress(); 
-		SetupNextTurn(); 
+		optionsMenu.SetActive(false);
+		StartCoroutine(SetupNextTurn());
 	}
 
 	IEnumerator EnemyTurn(){
 		dialogueText.text = units[currentUnitIndex].GetName() + " attacks."; 
-		yield return waitForAnyKeyPress();  
-
+		yield return waitForAnyKeyPress();
 		//choose a target 
 		BattleUnit target = players[Random.Range(0, players.Count - 1)]; 
-		bool isDead = target.TakeDamage(units[currentUnitIndex].unit.strength);  
+		target.TakeDamage(units[currentUnitIndex].unit.strength);  
 		dialogueText.text = "You were hit."; 
-
-		yield return waitForAnyKeyPress(); 
-		if(isDead){
-			state = BattleState.LOST; 
-			EndBattle(); 
-		}
-		else{
-			SetupNextTurn(); 
-		}
+		yield return waitForAnyKeyPress();
+		StartCoroutine(SetupNextTurn());
 	}
 
-	void EndBattle(){
+	IEnumerator EndBattle(){
 		if(state == BattleState.WON){
 			dialogueText.text = "You won!"; 
+			yield return waitForAnyKeyPress(); 
+			SceneManager.LoadScene("Overworld"); 
 		} else if(state == BattleState.LOST){
 			dialogueText.text = "You were defeated."; 
+			yield return waitForAnyKeyPress();
 		}
 	}
 

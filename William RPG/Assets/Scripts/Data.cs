@@ -6,7 +6,6 @@ public static class Data {
 
 	private static List<Unit> playerParty = new List<Unit>(); 
 	private static List<Unit> enemyParty = new List<Unit>(); 
-	private static Unit enemy; //who we collided with 
 
 	public static void AddToPlayerParty(Unit unit){ 
 		playerParty.Add(unit); 
@@ -46,8 +45,7 @@ public static class Data {
 		return playerParty; 
 	}
 
-	public static void StoreCollidedEnemy(Unit unit){
-		enemy = unit; 
+	public static void StoreCollidedEnemy(Unit enemy){
 		enemyParty.Add(enemy); 
 	}
 

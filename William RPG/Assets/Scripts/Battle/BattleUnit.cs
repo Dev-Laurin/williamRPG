@@ -7,16 +7,13 @@ public class BattleUnit : MonoBehaviour {
 	public Unit unit; 
 	public bool isPlayer; 
 	public bool isDodging; 
+	public bool isDead; 
 
-	// Use this for initialization
-	void Start () {
-		//give the unit a special move 
+	PlayerHUD HUD; 
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public int GetHP(){
+		return unit.hp; 
 	}
 
 	public string GetName(){
@@ -28,17 +25,20 @@ public class BattleUnit : MonoBehaviour {
 		return unit.speed; 
 	}
 
-	public void SetStats(Unit u, bool isP = false){
+	public void SetStats(Unit u, PlayerHUD hud = null, bool isP = false){
 		unit = u; 
+		HUD = hud; 
 		isPlayer = isP; 
+		SetHUD(); 
 	}
 
-	public bool TakeDamage(int damage){
+	public void TakeDamage(int damage){
 		unit.hp = unit.hp - (damage - unit.defense); 
 		if(unit.hp <= 0){
-			return true; 
+			isDead = true; 
 		}
-		return false; 
+		isDead = false; 
+		SetHUD(); 
 	}
 
 	public void Heal(int amount){
@@ -46,6 +46,7 @@ public class BattleUnit : MonoBehaviour {
 		if(unit.hp > unit.maxHP){
 			unit.hp = unit.maxHP; 
 		}
+		SetHUD(); 
 	}
 
 	public void GainSP(int amount){
@@ -53,9 +54,10 @@ public class BattleUnit : MonoBehaviour {
 		if(unit.sp > unit.maxSP){
 			unit.sp = unit.maxSP; 
 		}
+		SetHUD(); 
 	}
 
 	public void SetHUD(){
-		
+		if(HUD != null) HUD.SetHUD(unit); 
 	}
 }
