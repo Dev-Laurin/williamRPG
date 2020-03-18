@@ -31,12 +31,17 @@ public class BattleUnit : MonoBehaviour {
 		SetHUD(); 
 	}
 
-	public void TakeDamage(int damage){
+	public string TakeDamage(int damage){
+		if(isDodging){
+			isDodging = false; 
+			return "You dodged the attack.";
+		}  
 		unit.hp = unit.hp - (damage - unit.defense); 
 		if(unit.hp <= 0){
 			unit.hp = 0; 
 		}
 		SetHUD(); 
+		return "The attack was successful."; 
 	}
 
 	public void Heal(int amount){

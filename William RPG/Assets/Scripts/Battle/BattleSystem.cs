@@ -243,8 +243,7 @@ public class BattleSystem : MonoBehaviour {
 		//wait for target to be chosen via Update func
 		yield return new WaitUntil(() => chooseTarget == false); 
 		//attack target 
-		enemies[targetPos].TakeDamage(units[currentUnitIndex].unit.strength); 
-		dialogueText.text = "The attack was successful."; 
+		dialogueText.text = enemies[targetPos].TakeDamage(units[currentUnitIndex].unit.strength); 
 		yield return waitForAnyKeyPress(); 
 		EndPlayerTurn();
 	}
@@ -267,6 +266,8 @@ public class BattleSystem : MonoBehaviour {
 
 	IEnumerator PlayerDodge(){
 		optionsMenu.SetActive(false);
+		var p = units[currentUnitIndex]; 
+		p.isDodging = true;  
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
 		yield return waitForAnyKeyPress(); 
 		EndPlayerTurn(); 
@@ -277,8 +278,7 @@ public class BattleSystem : MonoBehaviour {
 		yield return new WaitForSeconds(1);
 		//yield return waitForAnyKeyPress();
 		//choose a target 
-		players[Random.Range(0, players.Count - 1)].TakeDamage(units[currentUnitIndex].unit.strength);  
-		dialogueText.text = "You were hit."; 
+		dialogueText.text = players[Random.Range(0, players.Count - 1)].TakeDamage(units[currentUnitIndex].unit.strength);   
 		yield return new WaitForSeconds(1);
 		currentUnitIndex++; 
 		//update the carousel 
