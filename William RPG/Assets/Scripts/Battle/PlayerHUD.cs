@@ -19,4 +19,8 @@ public class PlayerHUD : MonoBehaviour {
 		spSlider.value = unit.sp; 
 		spSlider.maxValue = unit.maxSP; 
 	}
+
+	public void SetActive(bool b){
+		gameObject.SetActive(b); 
+	}
 }

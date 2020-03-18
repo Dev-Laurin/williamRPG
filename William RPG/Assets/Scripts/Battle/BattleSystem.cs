@@ -111,6 +111,11 @@ public class BattleSystem : MonoBehaviour {
 			
 		}
 
+		//hide any HUDS that are not being used 
+		for(int i=Party.Count; i<playerHUDs.Count; i++){
+			playerHUDs[i].SetActive(false); 
+		}
+
 		units = getTurnOrder();
 		currentUnitIndex = 0;
 		//update the turn list 
@@ -232,7 +237,7 @@ public class BattleSystem : MonoBehaviour {
 		//set target over enemy battlestation 1
 		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[0].transform.position, 0.5f);
 		targetIdentifier.SetActive(true); 
-		
+
 		optionsMenu.SetActive(false);
 		chooseTarget = true;
 		//wait for target to be chosen via Update func
