@@ -75,17 +75,15 @@ public class BattleSystem : MonoBehaviour {
 
 	void SetTurnCarousel(List<BattleUnit> u){
 		//loop through turnCarouselImages
-		int i = 0;  
-		// foreach(Image item in turnCarousel){
-		// 	item.sprite = u[i].battleHUDSprite;  
-		// 	i++; 
-		// }
+		int i = currentUnitIndex;  
 		foreach (Transform child in turnCarousel.transform) {
 			if(i >= u.Count){
-				child.gameObject.GetComponent<Image>().sprite = defaultTurnImage; 	
+				child.gameObject.GetComponent<Image>().sprite = defaultTurnImage;
+				child.gameObject.SetActive(false); 
 			} 
 			else{
-				child.gameObject.GetComponent<Image>().sprite = u[i].unit.battleHUDSprite;  
+				child.gameObject.GetComponent<Image>().sprite = u[i].unit.battleHUDSprite; 
+				child.gameObject.SetActive(true);  
 			}
 			i++; 
     	}
@@ -113,12 +111,17 @@ public class BattleSystem : MonoBehaviour {
 			
 		}
 
-		//wait for user to press enter to go to next text 
-		yield return waitForAnyKeyPress(); 
-
-		//change the state
 		units = getTurnOrder();
 		currentUnitIndex = 0;
+		//update the turn list 
+		SetTurnCarousel(units);
+
+		//don't show the target until the player's turn
+		targetIdentifier.SetActive(false); 
+
+		//wait for user to press enter to go to next text 
+		yield return waitForAnyKeyPress(); 
+ 
 		SetupNextTurn(); 
 	}
 
@@ -157,6 +160,7 @@ public class BattleSystem : MonoBehaviour {
 		if(currentUnitIndex >= units.Count){
 			units = getTurnOrder(); 
 			currentUnitIndex = 0; 
+			SetTurnCarousel(units); 
 		}
 		
 		if(units[currentUnitIndex].isPlayer){
@@ -221,13 +225,14 @@ public class BattleSystem : MonoBehaviour {
 
 	void PlayerTurn(){
 		dialogueText.text = "Choose an action.";
-		//set target over enemy battlestation 1
-		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[0].transform.position, 0.5f);
-		targetIdentifier.SetActive(true); 
 	}
 
 
 	IEnumerator PlayerAttack(){
+		//set target over enemy battlestation 1
+		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[0].transform.position, 0.5f);
+		targetIdentifier.SetActive(true); 
+		
 		optionsMenu.SetActive(false);
 		chooseTarget = true;
 		//wait for target to be chosen via Update func
