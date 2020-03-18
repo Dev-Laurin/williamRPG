@@ -123,6 +123,7 @@ public class BattleSystem : MonoBehaviour {
 
 		//don't show the target until the player's turn
 		targetIdentifier.SetActive(false); 
+		targetIdentifier.transform.position = enemyPositions[targetPos].transform.position;
 
 		//wait for user to press enter to go to next text 
 		yield return waitForAnyKeyPress(); 
@@ -187,47 +188,21 @@ public class BattleSystem : MonoBehaviour {
 	//vDir = 0 -- not diagonal
 	//move the target to specific battlestations to select an enemy
 	void moveTargetIdentifier(float hDir, float vDir){ //-1 for left 1 for right
-		Debug.Log("Horizontal: " + hDir + " Vertical: " + vDir); 
-		if(hDir == 0 && vDir == 0){
-			//no input, return unchanged. 
-			return; 
-		}
-		// if(IsMiddleTarget()){
-		// 	Debug.Log("We are in the middle"); 
-		// 	//go to next object based on diagonal
-		// 	if(vDir == -1 && hDir == 1 || vDir == 1 && hDir == -1){
-		// 		//down right or up left 
-		// 		targetPos += hDir * 2; 
-		// 	}
-		// 	else{
-		// 		targetPos += hDir; 
-		// 	}
-		// }
-		// else{
-		// 	//check if we are top or bottom 
-		// 	if(targetPos % 3 == 0){
-		// 		//we are the top 
-		// 		targetPos += hDir * 2; //skip
-		// 	}
-		// 	else{
-		// 		//we are the bottom 
-		// 		targetPos += hDir; //next 
-		// 	}
-		// }
-		Debug.Log(targetPos);
 		//loop through 
 		if(hDir > 0){
 			//go right
-			Debug.Log("Going right");
 			targetPos++; 
 		} 
 		else{
-			Debug.Log("Going left.");
 			targetPos--; 
 		}
+		//make sure we can't go out of range 
 		if(targetPos < 0) targetPos = 0; 
 		if(targetPos >= enemyPositions.Count) targetPos = enemyPositions.Count - 1;
-		targetIdentifier.transform.position = enemyPositions[targetPos].transform.position; //Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[targetPos].transform.position, 1.0f); 
+		
+		//make sure we can't choose empty positions
+		if(targetPos >= enemies.Count) targetPos = enemies.Count - 1; 
+		targetIdentifier.transform.position = enemyPositions[targetPos].transform.position;
 	}
 
 	void PlayerTurn(){
