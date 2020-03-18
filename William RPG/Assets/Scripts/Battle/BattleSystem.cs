@@ -186,60 +186,79 @@ public class BattleSystem : MonoBehaviour {
 
 	//vDir = 0 -- not diagonal
 	//move the target to specific battlestations to select an enemy
-	void moveTargetIdentifier(int hDir, int vDir){ //-1 for left 1 for right
-		if(IsMiddleTarget()){
-			//go to next object based on diagonal
-			if(vDir == -1 && hDir == 1 || vDir == 1 && hDir == -1){
-				//down right or up left 
-				targetPos += hDir * 2; 
-			}
-			else{
-				targetPos += hDir; 
-			}
+	void moveTargetIdentifier(float hDir, float vDir){ //-1 for left 1 for right
+		Debug.Log("Horizontal: " + hDir + " Vertical: " + vDir); 
+		if(hDir == 0 && vDir == 0){
+			//no input, return unchanged. 
+			return; 
 		}
+		// if(IsMiddleTarget()){
+		// 	Debug.Log("We are in the middle"); 
+		// 	//go to next object based on diagonal
+		// 	if(vDir == -1 && hDir == 1 || vDir == 1 && hDir == -1){
+		// 		//down right or up left 
+		// 		targetPos += hDir * 2; 
+		// 	}
+		// 	else{
+		// 		targetPos += hDir; 
+		// 	}
+		// }
+		// else{
+		// 	//check if we are top or bottom 
+		// 	if(targetPos % 3 == 0){
+		// 		//we are the top 
+		// 		targetPos += hDir * 2; //skip
+		// 	}
+		// 	else{
+		// 		//we are the bottom 
+		// 		targetPos += hDir; //next 
+		// 	}
+		// }
+		Debug.Log(targetPos);
+		//loop through 
+		if(hDir > 0){
+			//go right
+			Debug.Log("Going right");
+			targetPos++; 
+		} 
 		else{
-			//check if we are top or bottom 
-			if(targetPos % 3 == 0){
-				//we are the top 
-				targetPos += hDir * 2; //skip
-			}
-			else{
-				//we are the bottom 
-				targetPos += hDir; //next 
-			}
+			Debug.Log("Going left.");
+			targetPos--; 
 		}
 		if(targetPos < 0) targetPos = 0; 
 		if(targetPos >= enemyPositions.Count) targetPos = enemyPositions.Count - 1;
-		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[targetPos].transform.position, 0.5f); 
-	}
-
-	void FixedUpdate(){
-		//cycle through the enemy targets with left 
-		//and right arrows
-		if(state == BattleState.PLAYERTURN && chooseTarget){
-			moveTargetIdentifier((int)Input.GetAxis("Horizontal"), (int)Input.GetAxis("Vertical")); 
-			if(Input.GetKey(KeyCode.Return)){
-				//set the target 
-				//deactivate the target object -- the player is done choosing
-				targetIdentifier.SetActive(false); 
-				chooseTarget = false; 
-			}
-		}
-		
+		targetIdentifier.transform.position = enemyPositions[targetPos].transform.position; //Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[targetPos].transform.position, 1.0f); 
 	}
 
 	void PlayerTurn(){
 		dialogueText.text = "Choose an action.";
 	}
 
+	void Update(){
+		if(chooseTarget){
+			if(Input.GetKeyUp(KeyCode.RightArrow)){
+				moveTargetIdentifier(1.0f, 0.0f); 
+			}
+			else if(Input.GetKeyUp(KeyCode.LeftArrow)){
+				moveTargetIdentifier(-1.0f, 0.0f); 
+			}
+			else if(Input.GetKey(KeyCode.Return)){
+				//set the target 
+				//deactivate the target object -- the player is done choosing
+				targetIdentifier.SetActive(false); 
+				chooseTarget = false;
+			}
+		}
+	}
 
 	IEnumerator PlayerAttack(){
 		//set target over enemy battlestation 1
+		dialogueText.text = "Choose a target.";
 		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[0].transform.position, 0.5f);
 		targetIdentifier.SetActive(true); 
-
 		optionsMenu.SetActive(false);
 		chooseTarget = true;
+		//StartCoroutine(chooseATarget()); 
 		//wait for target to be chosen via Update func
 		yield return new WaitUntil(() => chooseTarget == false); 
 		//attack target 
