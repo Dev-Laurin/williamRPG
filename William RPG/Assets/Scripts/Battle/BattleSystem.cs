@@ -94,7 +94,8 @@ public class BattleSystem : MonoBehaviour {
 		//Setup Player Party  
 		for(int i=0; i<Party.Count; i++){
 			//set the first 4 players on the battlefield
-			GameObject playerObj = Instantiate(player, playerPositions[i]); 
+			GameObject playerObj = Instantiate(player, playerPositions[i]);
+			playerObj.transform.position = playerPositions[i].position;  
 			BattleUnit playerUnit = playerObj.GetComponent<BattleUnit>(); 
 			playerUnit.SetStats(Party[i], playerHUDs[i], true); 
 			players.Add(playerUnit); 
@@ -104,6 +105,7 @@ public class BattleSystem : MonoBehaviour {
 		//Setup Enemy Party 
 		for(int i=0; i<EnemyParty.Count; i++){
 			GameObject enemyObj = Instantiate(enemy, enemyPositions[i]); 
+			enemyObj.transform.position = enemyPositions[i].position; 
 			BattleUnit enemyUnit = enemyObj.GetComponent<BattleUnit>(); 
 			enemyUnit.SetStats(EnemyParty[i], playerHUDs[3]); //change the HUD
 			enemies.Add(enemyUnit); 
