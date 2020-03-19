@@ -143,7 +143,12 @@ public class BattleSystem : MonoBehaviour {
 		//if all the enemies are dead or if all the players are KO'd = end battle
 		int dead = 0; 
 		for(int i=0; i<players.Count; i++){
-			if(players[i].GetHP() <= 0) dead++;  
+			if(players[i].GetHP() <= 0){
+				//remove player from turn list 
+				players.RemoveAt(i);
+				i--;  
+				dead++;	
+			}   
 		}
 		if(dead == players.Count){
 			//Game Over 
@@ -154,7 +159,11 @@ public class BattleSystem : MonoBehaviour {
 		//if all the enemies are dead 
 		dead = 0; 
 		for(int i=0; i<enemies.Count; i++){
-			if(enemies[i].GetHP() <= 0) dead++; 
+			if(enemies[i].GetHP() <= 0){
+				enemies.RemoveAt(i); 
+				i--; 
+				dead++; 
+			} 
 		}
 		if(dead == enemies.Count){
 			state = BattleState.WON; 
@@ -284,6 +293,7 @@ public class BattleSystem : MonoBehaviour {
 		if(state == BattleState.WON){
 			dialogueText.text = "You won!"; 
 			yield return waitForAnyKeyPress(); 
+			Data.RemoveEnemyParty(); 
 			SceneManager.LoadScene("Overworld"); 
 		} else if(state == BattleState.LOST){
 			dialogueText.text = "You were defeated."; 

@@ -13,15 +13,8 @@ public class Player : MonoBehaviour {
 		if(unit.rb == null){
 			Debug.LogError("Player::Start cant find Rigidbody2D </sadface>"); 
 		}
-		Data.AddToPlayerParty(unit); 
-		foreach(var p in Data.GetPlayerParty()){
-			Debug.Log(p); 
-		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
+		Data.EmptyPlayerParty(); 
+		Data.AddToPlayerParty(unit);
 	}
 
 	void OnTriggerEnter2D(Collider2D other){

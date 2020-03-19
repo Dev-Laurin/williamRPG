@@ -45,12 +45,20 @@ public static class Data {
 		return playerParty; 
 	}
 
+	public static void EmptyPlayerParty(){
+		playerParty = new List<Unit>(); 
+	}
+
 	public static void StoreCollidedEnemy(Unit enemy){
 		enemyParty.Add(enemy); 
 	}
 
 	public static List<Unit> GetEnemyParty(){
 		return enemyParty; 
+	}
+
+	public static void RemoveEnemyParty(){
+		enemyParty = new List<Unit>(); 
 	}
 
 
