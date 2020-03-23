@@ -49,5 +49,8 @@ public class Player : MonoBehaviour {
 			//apply movement to player's transform 
 			unit.transform.Translate(directionOfMovement * Time.deltaTime, Space.World); 
 		}
+		if(Input.GetKeyUp("space")){
+			SceneManager.LoadScene("Cutscene"); 
+		}
 	}
 }
