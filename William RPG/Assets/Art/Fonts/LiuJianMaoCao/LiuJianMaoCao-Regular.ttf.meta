@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 6e322e2e976b94129b7d7e21eb5d1dd9
+timeCreated: 1584953148
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Liu Jian Mao Cao
+  fontNames:
+  - Liu Jian Mao Cao
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
