@@ -6,6 +6,7 @@ public class DialogueTrigger : MonoBehaviour {
 
 	void Start(){
 		//Load dialogue based on cutscene # 
+		
 
 		//Example Dialogue
 		Dialogue dialogue = new Dialogue();
