@@ -7,13 +7,20 @@ public class DialogueManager : MonoBehaviour {
 
 	public Text nameText; 
 	public Text dialogueText; 
-	private Queue<string> sentences; 
+	private Queue<string> sentences = new Queue<string>();
+	//be able to do multiple speaker's dialogues, or switching back and forth 
+	private Queue<Dialogue> dialogues = new Queue<Dialogue>(); 
 
-	void Start(){
-		sentences = new Queue<string>(); 
+	public void AddDialogueToQueue(Dialogue dialogue){
+		//add to the queue
+		dialogues.Enqueue(dialogue); 
 	}
 
-	public void StartDialogue(Dialogue dialogue){
+	//Pre: Need to load up dialogue queue before calling this 
+	public void StartDialogue(){
+		Dialogue dialogue = dialogues.Dequeue(); 
+		Debug.Log(dialogue.name); 
+
 		nameText.text = dialogue.name;  
 		//clear from previous conversation 
 		sentences.Clear(); 
@@ -26,8 +33,13 @@ public class DialogueManager : MonoBehaviour {
 	}
 
 	public void DisplayNextSentence(){
-		if(sentences.Count == 0){
+		if(sentences.Count == 0 && dialogues.Count == 0){
 			EndDialogue(); 
+			return; 
+		}
+		else if(sentences.Count == 0){
+			//go to next dialogue sequence 
+			StartDialogue();  
 			return; 
 		}
 
