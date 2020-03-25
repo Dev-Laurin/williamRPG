@@ -10,9 +10,9 @@ public class NPC : Unit {
 
 	public NPC(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 
-		int STRENGTH) : base(NAME, HP, MAXHP, 
+		int STRENGTH, int SPEED) : base(NAME, HP, MAXHP, 
 		MAXSP, SP, LEVEL, DEFENSE, 
-		STRENGTH){}
+		STRENGTH, SPEED){}
 
 	// Use this for initialization
 	void Start () {

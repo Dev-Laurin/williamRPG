@@ -1,0 +1,30 @@
+//Template for this file 
+//Comments are ignored - add all you like! 
+
+//Give the speaker's name then the dialogue 
+//sentence by sentence seperated by endlines.
+// Make a blank line when a speaker is 
+//finished. Then give any code to run then give the 
+//next scene's name. 
+
+//Speaker's name
+William
+//Sentences 
+Hello there mystery person I have never seen before.
+Would you like to join my party?
+I have to save my favorite TV show from being canceled.
+
+Mysterious Person 
+Depends.
+Which show?
+
+William 
+Fly Up 
+
+Dell
+Yea I don't care. 
+Wait. 
+The CEO of 434 hates that show. 
+Ok I'm joining you.
+
+[AddToParty, Overworld] 

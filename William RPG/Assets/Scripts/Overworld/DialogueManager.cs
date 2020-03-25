@@ -58,5 +58,10 @@ public class DialogueManager : MonoBehaviour {
 
 	private void EndDialogue(){
 		Debug.Log("This conversation is over."); 
+		//Ending Action 
+		PlayableUnit dell = new PlayableUnit("Dell", 20,
+		20, 5, 5, 1, 1, 7, 3); 
+		Data.AddToPlayerParty(dell);
+		Data.GoToLastScene(); 
 	}
 }

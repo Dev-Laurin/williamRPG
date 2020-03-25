@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 public static class Data {
 
 	private static List<PlayableUnit> playerParty = new List<PlayableUnit>(); 
 	private static List<EnemyUnit> enemyParty = new List<EnemyUnit>(); 
+
+	//Placeholder for file saving 
+	static string SceneName; 
+
 
 	public static void AddToPlayerParty(PlayableUnit unit){ 
 		playerParty.Add(unit); 
@@ -61,5 +66,37 @@ public static class Data {
 		enemyParty = new List<EnemyUnit>(); 
 	}
 
+	public static void SaveGame(){
+		//what scene name 
+		SceneName =  SceneManager.GetActiveScene().name; 
+
+		//players' positions
+
+		//enemies' positions
+
+		//npcs' positions 
+
+		//camera position 
+
+		//items 
+
+		//player party - stats, positions
+
+	}
+
+	public static void LoadGame(){
+		SceneManager.LoadScene(SceneName); 
+
+		//load player's positions 
+		for(int i=0; i<playerParty.Count; i++){
+			
+		}
+	}
+
+	//coming back from a cutscene 
+	public static void GoToLastScene(){
+		//load the game state of the last scene 
+		LoadGame(); 
+	}
 
 }

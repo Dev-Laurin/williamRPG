@@ -27,7 +27,7 @@ public class Unit : Stats {
 
 	public Unit(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 
-		int STRENGTH){
+		int STRENGTH, int SPEED){
 		name = NAME; 
 		hp = HP; 
 		maxHP = MAXHP; 
@@ -35,7 +35,8 @@ public class Unit : Stats {
 		sp = SP; 
 		level = LEVEL; 
 		defense = DEFENSE; 
-		strength = STRENGTH; 
+		strength = STRENGTH;
+		speed = SPEED;  
 	}
 
 	// Use this for initialization
