@@ -31,8 +31,8 @@ public class BattleSystem : MonoBehaviour {
 
 	public GameObject turnCarousel; 
 
-	List<Unit>Party = Data.GetPlayerParty();
-	List<Unit>EnemyParty = Data.GetEnemyParty(); 
+	List<PlayableUnit>Party = Data.GetPlayerParty();
+	List<EnemyUnit>EnemyParty = Data.GetEnemyParty(); 
 
 	//the current unit's turn 
 	int currentUnitIndex; 

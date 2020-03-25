@@ -2,43 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour {
+public class Unit : Stats {
 
 	//For collision / movement 
 	public float moveSpeed = 5f;  
 	public Rigidbody2D rb; 
-	public Vector3 position;
 
-	//Stats 
-	public string name; 
-	public int hp; 
-	public int maxHP; 
-	public int maxSP; 
-	public int sp; 
-	public int level; 
-	public int defense; 
-	public int strength;
-	public int speed; 
-
-	//Position in the party. Drawing/following/battle place
-	public int partyPos; 
-	public bool isEnemy; 
-	public bool isPlayable;
-
+	//are we following the player? 
 	public bool followPlayer;  
 	public GameObject player; 
 	public float FollowSpeed; 
-	public RaycastHit Shot; 
-	public float AllowedDistance = 1; 
-	public float TargetDistance; 
+	float AllowedDistance = 1; 
+	float TargetDistance = 1; 
 
 	//Sprite Animations 
 	Animation walkLeft; 
 	Animation walkRight; 
 	Animation walkUp; 
 	Animation walkDown; 
-
-	Animation battleIdle; 
 
 	//Sprites for HUDs 
 	public Sprite HUDSprite; 
@@ -58,7 +39,7 @@ public class Unit : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	public virtual void Start () {
 		rb = gameObject.GetComponent<Rigidbody2D>(); 
 		if(rb == null){
 			Debug.LogError("Player::Start cant find Rigidbody2D </sadface>"); 
@@ -66,7 +47,7 @@ public class Unit : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public virtual void Update () {
 		if(followPlayer){
 			TargetDistance = Vector3.Distance(transform.position, player.transform.position); 
 			if(TargetDistance >= AllowedDistance){
@@ -78,5 +59,9 @@ public class Unit : MonoBehaviour {
 				FollowSpeed = 0; 
 			}
 		}
+	}
+
+	public virtual void FixedUpdate(){
+		//for inheritance 
 	}
 }

@@ -3,54 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-public class Player : MonoBehaviour {
-
-	public Unit unit; 
+public class Player : PlayableUnit {
+	
+	public Player(string NAME, int HP, int MAXHP, 
+		int MAXSP, int SP, int LEVEL, int DEFENSE, 
+		int STRENGTH) : base(NAME, HP, MAXHP, 
+		MAXSP, SP, LEVEL, DEFENSE, 
+		STRENGTH){}
 
 	// Use this for initialization
-	void Start () {
-		unit.rb = gameObject.GetComponent<Rigidbody2D>(); 
-		if(unit.rb == null){
-			Debug.LogError("Player::Start cant find Rigidbody2D </sadface>"); 
-		}
+	public override void Start () {
+		base.Start(); 
 		Data.EmptyPlayerParty(); 
-		Data.AddToPlayerParty(unit);
+		Data.AddToPlayerParty(this);
+
+		//player cannot follow themself 
+		followPlayer = false; 
 	}
 
 	void OnTriggerEnter2D(Collider2D other){
-		Debug.Log("Collision -- Battle"); 
-		Unit collidedUnit = other.gameObject.GetComponent<Unit>(); 
-		if(collidedUnit.isEnemy){
+		EnemyUnit collidedUnit = other.gameObject.GetComponent<EnemyUnit>();
+		if(other.gameObject.tag == "Enemy"){
 			//transfer data to global game object 
 			Data.StoreCollidedEnemy(collidedUnit); 
-			Data.UpdatePlayerUnit(unit); 
+			Data.UpdatePlayerUnit(this); 
 			//Go to next scene 
 			SceneManager.LoadScene("Battle"); 
 		}
-		else if(collidedUnit.isPlayable){
-			//add them to the party 
-			Data.AddToPlayerParty(collidedUnit); 
-			Debug.Log("Added: " + collidedUnit.name + " to the party!"); 
-			collidedUnit.followPlayer = true; 
-		}
-		
 	}
 
-	void FixedUpdate(){
+	public override void FixedUpdate(){
+		base.FixedUpdate(); 
 		//check if user has pressed some input keys 
 		if(Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0){
 			//convert user input into world movement 
-			float horizontalMovement = Input.GetAxisRaw("Horizontal") * unit.moveSpeed;
-			float verticalMovement = Input.GetAxisRaw("Vertical") * unit.moveSpeed; 
+			float horizontalMovement = Input.GetAxisRaw("Horizontal") * moveSpeed;
+			float verticalMovement = Input.GetAxisRaw("Vertical") * moveSpeed; 
 
 			//assign world movements to a Vector 
 			Vector3 directionOfMovement = new Vector3(horizontalMovement, verticalMovement, 0); 
 
 			//apply movement to player's transform 
-			unit.transform.Translate(directionOfMovement * Time.deltaTime, Space.World); 
-		}
-		if(Input.GetKeyUp("space")){
-			SceneManager.LoadScene("Cutscene"); 
+			transform.Translate(directionOfMovement * Time.deltaTime, Space.World); 
 		}
 	}
 }

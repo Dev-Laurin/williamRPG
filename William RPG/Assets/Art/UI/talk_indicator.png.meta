@@ -1,15 +1,19 @@
 fileFormatVersion: 2
-guid: 2f3d545b8a42f4d20b9cc051ad8f0107
-timeCreated: 1584687314
+guid: 8f34cecab47e6457cbe6f92b56311749
+timeCreated: 1585103472
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: william_cutscene_0
-    21300002: william_cutscene_1
-    21300004: william_cutscene_2
-    21300006: william_cutscene_3
-    21300008: william_cutscene_4
-    21300010: william_cutscene_5
+    21300000: talk_indicator_0
+    21300002: talk_indicator_1
+    21300004: talk_indicator_2
+    21300006: talk_indicator_3
+    21300008: talk_indicator_4
+    21300010: talk_indicator_5
+    21300012: talk_indicator_6
+    21300014: talk_indicator_7
+    21300016: talk_indicator_8
+    21300018: talk_indicator_9
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -44,8 +48,8 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: 0, y: 1}
-  spriteBorder: {x: 0, y: 32, z: 32, w: 0}
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -59,7 +63,7 @@ TextureImporter:
   - buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -67,7 +71,7 @@ TextureImporter:
   - buildTarget: Standalone
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -75,7 +79,7 @@ TextureImporter:
   - buildTarget: iPhone
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -83,7 +87,7 @@ TextureImporter:
   - buildTarget: Android
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -91,7 +95,7 @@ TextureImporter:
   - buildTarget: Tizen
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -99,7 +103,7 @@ TextureImporter:
   - buildTarget: WebGL
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -107,7 +111,7 @@ TextureImporter:
   - buildTarget: Samsung TV
     maxTextureSize: 2048
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -116,78 +120,130 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: william_cutscene_0
+      name: talk_indicator_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 64
-        width: 29
-        height: 31
+        x: 5
+        y: 100
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: william_cutscene_1
+      name: talk_indicator_1
       rect:
         serializedVersion: 2
-        x: 34
-        y: 64
-        width: 29
-        height: 31
+        x: 37
+        y: 100
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: william_cutscene_2
+      name: talk_indicator_2
       rect:
         serializedVersion: 2
-        x: 2
-        y: 32
-        width: 29
-        height: 31
+        x: 69
+        y: 100
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: william_cutscene_3
+      name: talk_indicator_3
       rect:
         serializedVersion: 2
-        x: 34
-        y: 32
-        width: 29
-        height: 31
+        x: 5
+        y: 68
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: william_cutscene_4
+      name: talk_indicator_4
       rect:
         serializedVersion: 2
-        x: 2
-        y: 0
-        width: 29
-        height: 31
+        x: 37
+        y: 68
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: william_cutscene_5
+      name: talk_indicator_5
       rect:
         serializedVersion: 2
-        x: 34
-        y: 0
-        width: 29
-        height: 31
+        x: 69
+        y: 68
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: talk_indicator_6
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 36
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: talk_indicator_7
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 36
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: talk_indicator_8
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 36
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: talk_indicator_9
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 4
+        width: 23
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
