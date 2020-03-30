@@ -9,7 +9,7 @@ public static class Data {
 	private static List<EnemyUnit> enemyParty = new List<EnemyUnit>(); 
 
 	//Placeholder for file saving 
-	static string SceneName; 
+	static string SceneName = "Overworld"; 
 
 
 	public static void AddToPlayerParty(PlayableUnit unit){ 
@@ -68,7 +68,7 @@ public static class Data {
 
 	public static void SaveGame(){
 		//what scene name 
-		SceneName =  SceneManager.GetActiveScene().name; 
+	//	SceneName =  SceneManager.GetActiveScene().name; 
 
 		//players' positions
 
@@ -85,11 +85,11 @@ public static class Data {
 	}
 
 	public static void LoadGame(){
-		SceneManager.LoadScene(SceneName); 
+		SceneManager.LoadScene("Overworld"); 
 
 		//load player's positions 
 		for(int i=0; i<playerParty.Count; i++){
-			
+
 		}
 	}
 
@@ -97,6 +97,10 @@ public static class Data {
 	public static void GoToLastScene(){
 		//load the game state of the last scene 
 		LoadGame(); 
+	}
+
+	public static int GetCurrentCutsceneIndex(){
+		return 0; 
 	}
 
 }

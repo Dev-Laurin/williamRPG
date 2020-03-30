@@ -4,26 +4,31 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour {
 
+	public TextAsset jsonFile; 
+
 	void Start(){
-		//Load dialogue based on cutscene # 
-		
-
-		//Example Dialogue
-		Dialogue dialogue = new Dialogue();
-		dialogue.name = "William"; 
-		dialogue.sentences = new string [] {"Hello there mystery person I have never seen before.", 
-		"Would you like to join my party? ", 
-		"I have to save my favorite TV show from being canceled."}; 
-		FindObjectOfType<DialogueManager>().AddDialogueToQueue(dialogue); 
-
-		dialogue = new Dialogue();
-		dialogue.name = "Mysterious Person"; 
-		dialogue.sentences = new string [] {"Depends.", "Which show?"}; 
-		FindObjectOfType<DialogueManager>().AddDialogueToQueue(dialogue);
+		LoadCutsceneDialogue(); 
 		TriggerDialogue(); 
+		TriggerCutsceneActions(); 
+	}
+
+	public void LoadCutsceneDialogue(){
+		//Load dialogue based on cutscene # 
+		Cutscenes cutscenesObj = JsonUtility.FromJson<Cutscenes>(jsonFile.text); 
+		int cutscene = Data.GetCurrentCutsceneIndex(); 
+
+		//loop through cutscene dialogue 
+		for(int i=0; i<cutscenesObj.cutscenes[cutscene].conversation.Count; i++){
+			Dialogue dialogue = cutscenesObj.cutscenes[cutscene].conversation[i]; 
+			FindObjectOfType<DialogueManager>().AddDialogueToQueue(dialogue); 
+		}
 	}
 
 	public void TriggerDialogue(){
 		FindObjectOfType<DialogueManager>().StartDialogue();  
+	}
+
+	public void TriggerCutsceneActions(){
+		
 	}
 }

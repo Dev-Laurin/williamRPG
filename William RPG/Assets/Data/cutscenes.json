@@ -1,0 +1,54 @@
+{
+    "Cutscenes":
+    [
+        {
+            "Conversation": 
+            [
+                {
+                    "name": "William", 
+                    "sentences": [
+                        "Hello there mystery person I have never seen before.",
+                        "Would you like to join my party?", 
+                        "I have to save my favorite TV show from being canceled."
+                    ], 
+                    "Animation": "William_Talking"
+                }, 
+                {
+                    "name": "Dell", 
+                    "sentences": [
+                        "Depends.", 
+                        "Which show?"
+                    ], 
+                    "Animation": "Dell_Talking"
+                },
+                {
+                    "name": "William", 
+                    "sentences": [
+                        "Fly Up"
+                    ], 
+                    "Animation": "William_Talking"
+                }, 
+                {
+                    "name": "Dell", 
+                    "sentences": [
+                        "Yea I don't care.", 
+                        "Wait.", 
+                        "The CEO of 434 hates that show.", 
+                        "Ok I'm joining you."
+                    ], 
+                    "Animation": "Dell_Talking"
+                }
+            ],
+            "Actions": [
+                {
+                    "Function": "AddToParty", 
+                    "Parameters": ["Dell"]
+                }, 
+                {
+                    "Function": "GoToLastScene", 
+                    "Parameters": []
+                }
+            ]
+        }
+    ] 
+}
