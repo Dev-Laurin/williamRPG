@@ -1,8 +1,9 @@
+
 {
-    "Cutscenes":
+    "cutscenes": 
     [
         {
-            "Conversation": 
+            "conversation": 
             [
                 {
                     "name": "William", 
@@ -39,7 +40,7 @@
                     "Animation": "Dell_Talking"
                 }
             ],
-            "Actions": [
+            "actions": [
                 {
                     "Function": "AddToParty", 
                     "Parameters": ["Dell"]
@@ -50,5 +51,5 @@
                 }
             ]
         }
-    ] 
+    ]
 }

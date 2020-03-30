@@ -15,13 +15,14 @@ public class DialogueTrigger : MonoBehaviour {
 	public void LoadCutsceneDialogue(){
 		//Load dialogue based on cutscene # 
 		Cutscenes cutscenesObj = JsonUtility.FromJson<Cutscenes>(jsonFile.text); 
-		int cutscene = Data.GetCurrentCutsceneIndex(); 
+		int cutscene = Data.GetCurrentCutsceneIndex();
+		Debug.Log(cutscenesObj.cutscenes.Count);  
 
-		//loop through cutscene dialogue 
-		for(int i=0; i<cutscenesObj.cutscenes[cutscene].conversation.Count; i++){
-			Dialogue dialogue = cutscenesObj.cutscenes[cutscene].conversation[i]; 
+		foreach(Dialogue dialogue in cutscenesObj.cutscenes[cutscene].conversation){
 			FindObjectOfType<DialogueManager>().AddDialogueToQueue(dialogue); 
 		}
+		//loop through cutscene dialogue 
+
 	}
 
 	public void TriggerDialogue(){

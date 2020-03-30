@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection; 
 
+[System.Serializable]
 public class Action {
 
 	public string functionName; 

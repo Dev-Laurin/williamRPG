@@ -68,7 +68,7 @@ public static class Data {
 
 	public static void SaveGame(){
 		//what scene name 
-	//	SceneName =  SceneManager.GetActiveScene().name; 
+		SceneName =  SceneManager.GetActiveScene().name; 
 
 		//players' positions
 
