@@ -9,8 +9,7 @@ public class DialogueTrigger : MonoBehaviour {
 	void Start(){
 		//Load dialogue based on cutscene # 
 		Cutscenes cutscenesObj = JsonUtility.FromJson<Cutscenes>(jsonFile.text); 
-		int cutscene = Data.GetCurrentCutsceneIndex();
-		Debug.Log(cutscenesObj.cutscenes.Count);  
+		int cutscene = Data.GetCurrentCutsceneIndex();  
 
 		//loop through cutscene dialogue 
 		foreach(Dialogue dialogue in cutscenesObj.cutscenes[cutscene].conversation){
