@@ -12,7 +12,7 @@
                         "Would you like to join my party?", 
                         "I have to save my favorite TV show from being canceled."
                     ], 
-                    "Animation": "William_Talking"
+                    "animation": "William_Talking"
                 }, 
                 {
                     "name": "Dell", 
@@ -20,14 +20,14 @@
                         "Depends.", 
                         "Which show?"
                     ], 
-                    "Animation": "Dell_Talking"
+                    "animation": "Dell_Talking"
                 },
                 {
                     "name": "William", 
                     "sentences": [
                         "Fly Up"
                     ], 
-                    "Animation": "William_Talking"
+                    "animation": "William_Talking"
                 }, 
                 {
                     "name": "Dell", 
@@ -37,17 +37,17 @@
                         "The CEO of 434 hates that show.", 
                         "Ok I'm joining you."
                     ], 
-                    "Animation": "Dell_Talking"
+                    "animation": "Dell_Talking"
                 }
             ],
             "actions": [
                 {
-                    "Function": "AddToParty", 
-                    "Parameters": ["Dell"]
+                    "function": "AddToParty", 
+                    "parameters": ["Dell"]
                 }, 
                 {
-                    "Function": "GoToLastScene", 
-                    "Parameters": []
+                    "function": "GoToLastScene", 
+                    "parameters": []
                 }
             ]
         }

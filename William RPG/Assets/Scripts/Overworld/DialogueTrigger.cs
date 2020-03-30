@@ -7,29 +7,26 @@ public class DialogueTrigger : MonoBehaviour {
 	public TextAsset jsonFile; 
 
 	void Start(){
-		LoadCutsceneDialogue(); 
-		TriggerDialogue(); 
-		TriggerCutsceneActions(); 
-	}
-
-	public void LoadCutsceneDialogue(){
 		//Load dialogue based on cutscene # 
 		Cutscenes cutscenesObj = JsonUtility.FromJson<Cutscenes>(jsonFile.text); 
 		int cutscene = Data.GetCurrentCutsceneIndex();
 		Debug.Log(cutscenesObj.cutscenes.Count);  
 
+		//loop through cutscene dialogue 
 		foreach(Dialogue dialogue in cutscenesObj.cutscenes[cutscene].conversation){
 			FindObjectOfType<DialogueManager>().AddDialogueToQueue(dialogue); 
 		}
-		//loop through cutscene dialogue 
 
+		//Start the cutscene 
+		TriggerDialogue(); 
+
+		//Run actions
+		foreach(Action action in cutscenesObj.cutscenes[cutscene].actions){
+			action.DoAction(); 
+		}
 	}
 
 	public void TriggerDialogue(){
 		FindObjectOfType<DialogueManager>().StartDialogue();  
-	}
-
-	public void TriggerCutsceneActions(){
-		
 	}
 }
