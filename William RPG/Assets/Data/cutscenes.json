@@ -43,21 +43,9 @@
             "actions": [
                 {
                     "function": "AddToPlayerParty", 
-                    "parameters": [
-                        {
-                            "PlayableUnit": 
-                            {
-                                "name": "Dell", 
-                                "hp": 20, 
-                                "maxHP": 20, 
-                                "maxSP": 5, 
-                                "sp": 5, 
-                                "level": 0, 
-                                "defense": 1, 
-                                "strength": 7, 
-                                "speed": 2
-                            }
-                        }
+                    "parametersJSON": 
+                    [
+                        "\"name\": \"PlayableUnit\", {\"name\": \"Dell\", \"hp\": 20, \"maxHP\": 20, \"maxSP\": 5, \"sp\": 5, \"level\": 0, \"defense\": 1, \"strength\": 7, \"speed\": 2}"
                     ]
                 }, 
                 {
