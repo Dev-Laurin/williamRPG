@@ -20,9 +20,7 @@ public class DialogueTrigger : MonoBehaviour {
 		TriggerDialogue(); 
 
 		//Run actions
-		foreach(Action action in cutscenesObj.cutscenes[cutscene].actions){
-			action.DoAction(); 
-		}
+		FindObjectOfType<DialogueManager>().AddActions(cutscenesObj.cutscenes[cutscene].actions); 
 	}
 
 	public void TriggerDialogue(){

@@ -13,7 +13,6 @@ public static class Data {
 
 
 	public static void AddToPlayerParty(PlayableUnit unit){ 
-		Debug.Log(unit); 
 		PlayableUnit u = new PlayableUnit(unit.name, unit.hp, 
 		unit.maxHP, unit.maxSP, unit.sp, unit.level, unit.defense,
 		unit.strength, unit.speed); 

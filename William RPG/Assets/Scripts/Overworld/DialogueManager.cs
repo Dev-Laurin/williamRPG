@@ -10,10 +10,13 @@ public class DialogueManager : MonoBehaviour {
 	private Queue<string> sentences = new Queue<string>();
 	//be able to do multiple speaker's dialogues, or switching back and forth 
 	private Queue<Dialogue> dialogues = new Queue<Dialogue>(); 
-
+	private List<Action> actions = new List<Action>(); 
 	public void AddDialogueToQueue(Dialogue dialogue){
 		//add to the queue
 		dialogues.Enqueue(dialogue); 
+	}
+	public void AddActions(List<Action> ACTIONS){
+		actions = ACTIONS; 
 	}
 
 	//Pre: Need to load up dialogue queue before calling this 
@@ -57,9 +60,8 @@ public class DialogueManager : MonoBehaviour {
 
 	private void EndDialogue(){
 		//Ending Action 
-		PlayableUnit dell = new PlayableUnit("Dell", 20,
-		20, 5, 5, 1, 1, 7, 3);  
-		Data.AddToPlayerParty(dell);
-		Data.GoToLastScene(); 
+		foreach(Action action in actions){
+			action.DoAction(); 
+		}
 	}
 }
