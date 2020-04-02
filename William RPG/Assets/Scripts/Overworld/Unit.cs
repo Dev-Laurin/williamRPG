@@ -50,6 +50,7 @@ public class Unit : Stats {
 	// Update is called once per frame
 	public virtual void Update () {
 		if(followPlayer){
+			
 			TargetDistance = Vector3.Distance(transform.position, player.transform.position); 
 			if(TargetDistance >= AllowedDistance){
 				FollowSpeed = 0.1f; 

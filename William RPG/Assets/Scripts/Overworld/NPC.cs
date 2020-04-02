@@ -7,6 +7,7 @@ public class NPC : Unit {
 
 	//interaction indicator 
 	public GameObject indicator = new GameObject(); 
+	public bool isEnabled; 
 
 	public NPC(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 
@@ -18,6 +19,12 @@ public class NPC : Unit {
 	void Start () {
 		//deactivate talking animation at first 
 		indicator.SetActive(false);
+
+		//Is this NPC here anymore?
+		if(Data.GetCurrentCutsceneIndex() > 0){
+			isEnabled = false; 	
+		} 
+		gameObject.SetActive(isEnabled); 
 	}
 
 	void OnTriggerEnter2D(Collider2D other){
@@ -39,6 +46,8 @@ public class NPC : Unit {
 	void FixedUpdate(){
 		if(Input.GetKeyUp("space")){
 			if(indicator.activeSelf){
+				//pass this object to Data in case cutscene needs it
+				isEnabled = false; 
 				SceneManager.LoadScene("Cutscene"); 
 			}
 		}

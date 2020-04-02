@@ -21,6 +21,8 @@ public class DialogueTrigger : MonoBehaviour {
 
 		//Run actions
 		FindObjectOfType<DialogueManager>().AddActions(cutscenesObj.cutscenes[cutscene].actions); 
+
+		Data.IncrementCutsceneIndex(); 
 	}
 
 	public void TriggerDialogue(){

@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement; 
 
 public class Player : PlayableUnit {
+
+	public GameObject partyMemberPrefab; 
+	public Queue<Vector3> positions = new Queue<Vector3>();
 	
 	public Player(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 
@@ -14,11 +17,25 @@ public class Player : PlayableUnit {
 	// Use this for initialization
 	public override void Start () {
 		base.Start(); 
-		Data.EmptyPlayerParty(); 
-		Data.AddToPlayerParty(this);
 
 		//player cannot follow themself 
 		followPlayer = false; 
+
+		//create party members
+		List<PlayableUnit> party = Data.GetPlayerParty();
+		Debug.Log(party[0]);
+		Debug.Log(party.Count);   
+		for(int i=1; i<party.Count; i++){
+			PlayableUnit player = party[i]; 
+			Transform pos = gameObject.transform; 
+			pos.position += new Vector3(-2 * player.partyPos, 0, 0); 
+			//who to follow, reference this
+			partyMemberPrefab.GetComponent<PlayableUnit>().player = gameObject; 
+			GameObject obj = Instantiate(partyMemberPrefab, pos);
+			obj.transform.position = pos.position; 
+			Debug.Log(obj); 
+		}
+		 
 	}
 
 	void OnTriggerEnter2D(Collider2D other){
@@ -30,6 +47,11 @@ public class Player : PlayableUnit {
 			//Go to next scene 
 			SceneManager.LoadScene("Battle"); 
 		}
+	}
+
+	public override void Update(){
+		//Data.UpdatePlayerPartyTransforms(); 
+		positions.Enqueue(gameObject.transform.position); 
 	}
 
 	public override void FixedUpdate(){

@@ -11,6 +11,12 @@ public static class Data {
 	//Placeholder for file saving 
 	static string SceneName = "Overworld"; 
 
+	static int cutsceneIndex = 0; 
+
+	//on construction
+	static Data(){
+		AddToPlayerParty(GameObject.Find("Player").GetComponent<Player>()); 
+	}
 
 	public static void AddToPlayerParty(PlayableUnit unit){ 
 		PlayableUnit u = new PlayableUnit(unit.name, unit.hp, 
@@ -102,8 +108,12 @@ public static class Data {
 		LoadGame(); 
 	}
 
+	public static void IncrementCutsceneIndex(){
+		cutsceneIndex++; 
+	}
+
 	public static int GetCurrentCutsceneIndex(){
-		return 0; 
+		return cutsceneIndex; 
 	}
 
 }

@@ -10,13 +10,14 @@ public class Action {
 
 	public void DoAction(){
 		if(function == "AddToPlayerParty"){
-			Debug.Log(parametersJSON[0]); 
+			 
 			Stats newUnit = new Stats(); 
 			JsonUtility.FromJsonOverwrite(parametersJSON[0], newUnit); 
 			PlayableUnit pu = new PlayableUnit(newUnit.name, newUnit.hp, 
 			newUnit.maxHP, newUnit.maxSP, newUnit.sp, newUnit.level,
 			newUnit.defense, newUnit.strength, newUnit.speed); 
 			Data.AddToPlayerParty(pu); 
+			Debug.Log("Adding " + pu + "to party.");
 		}
 		else if(function == "GoToLastScene"){
 			Data.GoToLastScene(); 
