@@ -22,18 +22,16 @@ public class Player : PlayableUnit {
 		followPlayer = false; 
 
 		//create party members
-		List<PlayableUnit> party = Data.GetPlayerParty();
-		Debug.Log(party[0]);
-		Debug.Log(party.Count);   
+		List<PlayableUnit> party = Data.GetPlayerParty();   
 		for(int i=1; i<party.Count; i++){
 			PlayableUnit player = party[i]; 
 			Transform pos = gameObject.transform; 
-			pos.position += new Vector3(-2 * player.partyPos, 0, 0); 
+			pos.position += new Vector3(-20 * player.partyPos, 0, 0); 
 			//who to follow, reference this
 			partyMemberPrefab.GetComponent<PlayableUnit>().player = gameObject; 
-			GameObject obj = Instantiate(partyMemberPrefab, pos);
+			GameObject obj = Instantiate(partyMemberPrefab, new Vector3(-20 * player.partyPos, 0, 0), Quaternion.identity);
 			obj.transform.position = pos.position; 
-			Debug.Log(obj); 
+			obj.GetComponent<PlayableUnit>().followPlayer = true; 
 		}
 		 
 	}
@@ -51,7 +49,7 @@ public class Player : PlayableUnit {
 
 	public override void Update(){
 		//Data.UpdatePlayerPartyTransforms(); 
-		positions.Enqueue(gameObject.transform.position); 
+		//positions.Enqueue(gameObject.transform.position); 
 	}
 
 	public override void FixedUpdate(){

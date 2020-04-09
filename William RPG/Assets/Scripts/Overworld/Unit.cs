@@ -12,8 +12,8 @@ public class Unit : Stats {
 	public bool followPlayer;  
 	public GameObject player; 
 	public float FollowSpeed; 
-	float AllowedDistance = 1; 
-	float TargetDistance = 1; 
+	float AllowedDistance = 70.0f; 
+	float TargetDistance = 20; 
 
 	//Sprite Animations 
 	Animation walkLeft; 
@@ -45,6 +45,8 @@ public class Unit : Stats {
 		if(rb == null){
 			Debug.LogError("Player::Start cant find Rigidbody2D </sadface>"); 
 		}
+		AllowedDistance = 1.0f; 
+		TargetDistance = 2; 
 	}
 	
 	// Update is called once per frame
@@ -52,8 +54,10 @@ public class Unit : Stats {
 		if(followPlayer){
 			
 			TargetDistance = Vector3.Distance(transform.position, player.transform.position); 
+			Debug.Log(TargetDistance); 
+			Debug.Log("Allowed distance " + AllowedDistance); 
 			if(TargetDistance >= AllowedDistance){
-				FollowSpeed = 0.1f; 
+				FollowSpeed = 0.05f; 
 				transform.position = Vector3.MoveTowards(transform.position, player.transform.position, FollowSpeed); 
 				
 			}

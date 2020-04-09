@@ -8,6 +8,8 @@ public class NPC : Unit {
 	//interaction indicator 
 	public GameObject indicator = new GameObject(); 
 	public bool isEnabled; 
+	public int triggersDialogueIndex;
+	public int disappearsAfterDialogueIndex;  
 
 	public NPC(string NAME, int HP, int MAXHP, 
 		int MAXSP, int SP, int LEVEL, int DEFENSE, 
@@ -21,7 +23,7 @@ public class NPC : Unit {
 		indicator.SetActive(false);
 
 		//Is this NPC here anymore?
-		if(Data.GetCurrentCutsceneIndex() > 0){
+		if(Data.GetCurrentCutsceneIndex() > disappearsAfterDialogueIndex && disappearsAfterDialogueIndex >= 0){
 			isEnabled = false; 	
 		} 
 		gameObject.SetActive(isEnabled); 

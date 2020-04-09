@@ -17,11 +17,11 @@ public class PlayableUnit : Unit {
 		STRENGTH, SPEED){}
 	
 
-	public override void Update(){
-		if(partyPos < 4){
-			Vector3 newPos = player.GetComponent<Player>().positions.Dequeue();
-			gameObject.transform.position = newPos; 
-		}
+	// public override void Update(){
+	// 	// if(partyPos < 4){
+	// 	// 	Vector3 newPos = player.GetComponent<Player>().positions.Dequeue();
+	// 	// 	gameObject.transform.position = newPos; 
+	// 	// }
 		 
-	}
+	// }
 }
