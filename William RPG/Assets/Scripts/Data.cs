@@ -15,35 +15,35 @@ public static class Data {
 
 	//on construction
 	static Data(){
-		AddToPlayerParty(GameObject.Find("Player").GetComponent<Player>()); 
+		
 	}
 
 	public static void AddToPlayerParty(PlayableUnit unit){ 
-		PlayableUnit u = new PlayableUnit(unit.name, unit.hp, 
-		unit.maxHP, unit.maxSP, unit.sp, unit.level, unit.defense,
-		unit.strength, unit.speed); 
-		playerParty.Add(u); 
-		SortPlayerParty(); 
+		// PlayableUnit u = new PlayableUnit(unit.name, unit.hp, 
+		// unit.maxHP, unit.maxSP, unit.sp, unit.level, unit.defense,
+		// unit.strength, unit.speed); 
+		// playerParty.Add(u); 
+		// SortPlayerParty(); 
 	}
 
 	public static void RemoveFromPlayerParty(PlayableUnit unit){
-		PlayableUnit unitToRemove = playerParty.Find(u => u.name == unit.name); 
-		playerParty.Remove(unitToRemove); 
+		// PlayableUnit unitToRemove = playerParty.Find(u => u.name == unit.name); 
+		// playerParty.Remove(unitToRemove); 
 	}
 
 	public static void SortPlayerParty(){
-		playerParty.Sort(delegate(PlayableUnit x, PlayableUnit y){
-			if(x.partyPos == y.partyPos) return 0; 
-			else if(x.partyPos > y.partyPos) return 1; 
-			else if(x.partyPos < y.partyPos) return -1; 
-			else return x.partyPos.CompareTo(y.partyPos); 
-		}); 
+		// playerParty.Sort(delegate(PlayableUnit x, PlayableUnit y){
+		// 	if(x.partyPos == y.partyPos) return 0; 
+		// 	else if(x.partyPos > y.partyPos) return 1; 
+		// 	else if(x.partyPos < y.partyPos) return -1; 
+		// 	else return x.partyPos.CompareTo(y.partyPos); 
+		// }); 
 
 	}
 
 	public static void UpdatePlayerUnit(PlayableUnit unit){
-		int index = playerParty.FindIndex(u => u.name == unit.name); 
-		playerParty[index] = unit; 
+		// int index = playerParty.FindIndex(u => u.name == unit.name); 
+		// playerParty[index] = unit; 
 	}
 
 	public static void UpdatePlayerPartyStats(List<PlayableUnit> party){
@@ -90,6 +90,8 @@ public static class Data {
 		//items 
 
 		//player party - stats, positions
+
+		//save to json file 
 
 	}
 

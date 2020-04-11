@@ -97,7 +97,7 @@ public class BattleSystem : MonoBehaviour {
 			GameObject playerObj = Instantiate(player, playerPositions[i]);
 			playerObj.transform.position = playerPositions[i].position;  
 			BattleUnit playerUnit = playerObj.GetComponent<BattleUnit>(); 
-			playerUnit.SetStats(Party[i], playerHUDs[i], true); 
+			//playerUnit.SetStats(Party[i], playerHUDs[i], true); 
 			players.Add(playerUnit); 
 
 		}

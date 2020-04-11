@@ -1,0 +1,15 @@
+{
+    "scene": "Battle", 
+    "enemyPositions": [
+        {"Homework": [40, 73]}
+    ], 
+    "npcPositions": [
+        {"Shae": [20, 10]}
+    ], 
+    "party": {
+
+    },
+    "cutsceneIndex": 0, 
+    "acceptedQuests": [], 
+    "completedQuests": []
+}
