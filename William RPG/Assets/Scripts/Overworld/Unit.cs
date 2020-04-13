@@ -54,8 +54,6 @@ public class Unit : Stats {
 		if(followPlayer){
 			
 			TargetDistance = Vector3.Distance(transform.position, player.transform.position); 
-			Debug.Log(TargetDistance); 
-			Debug.Log("Allowed distance " + AllowedDistance); 
 			if(TargetDistance >= AllowedDistance){
 				FollowSpeed = 0.05f; 
 				transform.position = Vector3.MoveTowards(transform.position, player.transform.position, FollowSpeed); 
@@ -65,9 +63,5 @@ public class Unit : Stats {
 				FollowSpeed = 0; 
 			}
 		}
-	}
-
-	public virtual void FixedUpdate(){
-		//for inheritance 
 	}
 }
