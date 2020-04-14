@@ -3,31 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleUnit : MonoBehaviour {
+	Animator animator; 
+	public Animator HUDAnimator; 
+	Stats stats; 
 
-	public Unit unit; 
-	public bool isPlayer; 
-	public bool isDodging; 
+	bool isDodging; 
 
-	PlayerHUD HUD; 
-
+	void Start(){
+		//Set animator
+		animator = GetComponent<Animator>(); 
+		stats = GetComponent<Stats>(); 
+	}
 
 	public int GetHP(){
-		return unit.hp; 
+		return stats.hp; 
 	}
 
 	public string GetName(){
-		return unit.name; 
+		return stats.name; 
 	}
 
 	//get the current speed, including status effects 
 	public int GetSpeed(){
-		return unit.speed; 
+		return stats.speed; 
 	}
 
-	public void SetStats(Unit u, PlayerHUD hud = null, bool isP = false){
-		unit = u; 
-		HUD = hud; 
-		isPlayer = isP; 
+	public void SetStats(){
 		SetHUD(); 
 	}
 
@@ -36,31 +37,31 @@ public class BattleUnit : MonoBehaviour {
 			isDodging = false; 
 			return "You dodged the attack.";
 		}  
-		unit.hp = unit.hp - (damage - unit.defense); 
-		if(unit.hp <= 0){
-			unit.hp = 0; 
+		stats.hp = stats.hp - (damage - stats.defense); 
+		if(stats.hp <= 0){
+			stats.hp = 0; 
 		}
 		SetHUD(); 
 		return "The attack was successful."; 
 	}
 
 	public void Heal(int amount){
-		unit.hp += amount; 
-		if(unit.hp > unit.maxHP){
-			unit.hp = unit.maxHP; 
+		stats.hp += amount; 
+		if(stats.hp > stats.maxHP){
+			stats.hp = stats.maxHP; 
 		}
 		SetHUD(); 
 	}
 
 	public void GainSP(int amount){
-		unit.sp += amount; 
-		if(unit.sp > unit.maxSP){
-			unit.sp = unit.maxSP; 
+		stats.sp += amount; 
+		if(stats.sp > stats.maxSP){
+			stats.sp = stats.maxSP; 
 		}
 		SetHUD(); 
 	}
 
 	public void SetHUD(){
-		if(HUD != null) HUD.SetHUD(unit); 
+		//if(HUD != null) HUD.SetHUD(stats); 
 	}
 }
