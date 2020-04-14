@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 4c1b93cc080a5e53dba49e286145b2f5
+guid: 6c4c645156fbe7e2d930ef25045c8a44
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8747435288563025213
-    second: William_walk_right_0
+      213: -7280175075981759337
+    second: William_walk_left_0
   - first:
-      213: 984246965718292400
-    second: William_walk_right_1
+      213: 5095079248105044685
+    second: William_walk_left_1
   - first:
-      213: 4462536542875754666
-    second: William_walk_right_2
+      213: 8685811213102228525
+    second: William_walk_left_2
   - first:
-      213: 8200937280885796389
-    second: William_walk_right_3
+      213: -5665322215543058433
+    second: William_walk_left_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -111,10 +111,10 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: William_walk_right_0
+      name: William_walk_left_0
       rect:
         serializedVersion: 2
-        x: 5
+        x: 15
         y: 38
         width: 12
         height: 23
@@ -125,17 +125,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3cafb7173fdda9680800000000000000
-      internalID: -8747435288563025213
+      spriteID: 79c6475275f97fa90800000000000000
+      internalID: -7280175075981759337
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: William_walk_right_1
+      name: William_walk_left_1
       rect:
         serializedVersion: 2
-        x: 37
+        x: 46
         y: 38
         width: 13
         height: 23
@@ -146,17 +146,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0b715ea866fb8ad00800000000000000
-      internalID: 984246965718292400
+      spriteID: dcaf3cdc49b55b640800000000000000
+      internalID: 5095079248105044685
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: William_walk_right_2
+      name: William_walk_left_2
       rect:
         serializedVersion: 2
-        x: 5
+        x: 15
         y: 6
         width: 12
         height: 23
@@ -167,17 +167,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa02f4b975d1eed30800000000000000
-      internalID: 4462536542875754666
+      spriteID: d24201767433a8870800000000000000
+      internalID: 8685811213102228525
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: William_walk_right_3
+      name: William_walk_left_3
       rect:
         serializedVersion: 2
-        x: 37
+        x: 47
         y: 6
         width: 12
         height: 23
@@ -188,8 +188,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 52ea47ca1059fc170800000000000000
-      internalID: 8200937280885796389
+      spriteID: fff4d6c067bb061b0800000000000000
+      internalID: -5665322215543058433
       vertices: []
       indices: 
       edges: []
