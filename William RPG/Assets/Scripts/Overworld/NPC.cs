@@ -32,9 +32,10 @@ public class NPC : Unit {
 	void OnTriggerEnter2D(Collider2D other){
 		//For talking indicator 
 		try{
-			Player collidedUnit = other.gameObject.GetComponent<Player>();
-			//show talking animation 
-			indicator.SetActive(true); 
+			if(other.gameObject.GetComponent<BattleUnit>().isPlayer){
+				//show talking animation 
+				indicator.SetActive(true);
+			}
 		}
 		catch(System.Exception e){
 			Debug.Log(e); 

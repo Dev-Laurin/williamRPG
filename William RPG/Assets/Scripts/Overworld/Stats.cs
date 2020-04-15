@@ -5,7 +5,7 @@ using UnityEngine;
 public class Stats : MonoBehaviour {
 
 	//Stats 
-	public string name; 
+	public new string name; 
 	public int hp; 
 	public int maxHP; 
 	public int maxSP; 

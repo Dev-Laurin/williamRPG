@@ -3,16 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleUnit : MonoBehaviour {
-	Animator animator; 
-	public Animator HUDAnimator; 
+	public Sprite HUDImage; 
+	public bool isPlayer; 
+	public int partyPosition; 
 	Stats stats; 
-
+	Animator animator; 
 	bool isDodging; 
+	PlayerHUD HUD; 
 
 	void Start(){
 		//Set animator
 		animator = GetComponent<Animator>(); 
 		stats = GetComponent<Stats>(); 
+	}
+
+	public void SetPartyPosition(int pos){
+		partyPosition = pos; 
+	}
+
+	public int GetPartyPosition(){
+		return partyPosition; 
+	}
+
+	public Sprite GetHUDSprite(){
+		return HUDImage; 
 	}
 
 	public int GetHP(){
@@ -28,8 +42,12 @@ public class BattleUnit : MonoBehaviour {
 		return stats.speed; 
 	}
 
-	public void SetStats(){
-		SetHUD(); 
+	public int GetStrength(){
+		return stats.strength; 
+	}
+
+	public void SetDodging(){
+		isDodging = true; 
 	}
 
 	public string TakeDamage(int damage){
@@ -41,7 +59,7 @@ public class BattleUnit : MonoBehaviour {
 		if(stats.hp <= 0){
 			stats.hp = 0; 
 		}
-		SetHUD(); 
+		UpdateHUD();
 		return "The attack was successful."; 
 	}
 
@@ -50,7 +68,7 @@ public class BattleUnit : MonoBehaviour {
 		if(stats.hp > stats.maxHP){
 			stats.hp = stats.maxHP; 
 		}
-		SetHUD(); 
+		UpdateHUD();
 	}
 
 	public void GainSP(int amount){
@@ -58,10 +76,16 @@ public class BattleUnit : MonoBehaviour {
 		if(stats.sp > stats.maxSP){
 			stats.sp = stats.maxSP; 
 		}
-		SetHUD(); 
+		UpdateHUD(); 
 	}
 
-	public void SetHUD(){
-		//if(HUD != null) HUD.SetHUD(stats); 
+	public void SetHUD(PlayerHUD hud){
+		HUD = hud; 
+		HUD.SetHUD(stats, HUDImage); 
+		isPlayer = true; 
+	}
+
+	public void UpdateHUD(){
+		if(HUD != null) HUD.UpdateHUD(stats); 
 	}
 }

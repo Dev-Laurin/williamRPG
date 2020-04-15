@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine; 
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;  
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -42,5 +43,15 @@ public class PlayerMovement : MonoBehaviour
 
 		//Apply movement to the rigidbody 
 		rb.MovePosition(rb.position + move * moveSpeed * Time.fixedDeltaTime); 
+	}
+
+	void OnTriggerEnter2D(Collider2D other){
+		if(other.gameObject.tag == "Enemy"){
+			//transfer data to global game object 
+			Data.StoreCollidedEnemy(other.gameObject); 
+			Data.UpdatePlayerUnit(gameObject); 
+			//Go to next scene 
+			SceneManager.LoadScene("Battle"); 
+		}
 	}
 }

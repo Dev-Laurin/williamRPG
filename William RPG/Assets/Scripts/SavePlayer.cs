@@ -24,7 +24,7 @@ public class SavePlayer
     string WalkDownAnim; 
 
     // Start is called before the first frame update
-    public void Save(PlayableUnit pu)
+    public void Save(GameObject pu)
     {
         // Position[0] = pu.transform.position.x;
         // Position[1] = pu.transform.position.y;

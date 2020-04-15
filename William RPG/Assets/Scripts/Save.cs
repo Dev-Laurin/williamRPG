@@ -5,8 +5,8 @@ using System.IO;
 
 public static class Save {
 	
-	public static void SaveGame(List<PlayableUnit>playableUnits, 
-	List<EnemyUnit>enemies, List<NPC> npcs){
+	public static void SaveGame(List<GameObject>playableUnits, 
+	List<GameObject>enemies, List<NPC> npcs){
 		//New file 
 		string path = Application.persistentDataPath + "/superWilliamRPGSave.json"; 
 		FileStream file = new FileStream(path, FileMode.Create); 
