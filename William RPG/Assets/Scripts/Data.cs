@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public static class Data {
 
-	private static List<GameObject> playerParty = new List<GameObject>(); 
-	private static List<GameObject> enemyParty = new List<GameObject>(); 
+	private static List<BattleUnit> playerParty = new List<BattleUnit>(); 
+	private static List<BattleUnit> enemyParty = new List<BattleUnit>(); 
 
 	//Placeholder for file saving 
 	static string SceneName = "Overworld"; 
@@ -16,60 +16,61 @@ public static class Data {
 	//on construction
 	static Data(){
 		//Add will to the party -- REMOVE THIS LATER
-		AddToPlayerParty(GameObject.Find("Will")); 
+		AddToPlayerParty(GameObject.Find("Will").GetComponent<BattleUnit>()); 
 	}
 
-	public static void AddToPlayerParty(GameObject unit){ 
-		playerParty.Add(unit); 
+	public static void AddToPlayerParty(BattleUnit unit){ 
+		BattleUnit newUnit = unit; 
+		playerParty.Add(newUnit); 
 		SortPlayerParty(); 
 	}
 
-	public static void RemoveFromPlayerParty(GameObject unit){
-		GameObject unitToRemove = playerParty.Find(u => u.GetComponent<Stats>().name == unit.GetComponent<Stats>().name); 
+	public static void RemoveFromPlayerParty(BattleUnit unit){
+		BattleUnit unitToRemove = playerParty.Find(u => u.stats.name == unit.stats.name); 
 		playerParty.Remove(unitToRemove); 
 	}
 
 	public static void SortPlayerParty(){
-		playerParty.Sort(delegate(GameObject x, GameObject y){
-			if(x.GetComponent<BattleUnit>().partyPosition == y.GetComponent<BattleUnit>().partyPosition) return 0; 
-			else if(x.GetComponent<BattleUnit>().partyPosition > y.GetComponent<BattleUnit>().partyPosition) return 1; 
-			else if(x.GetComponent<BattleUnit>().partyPosition < y.GetComponent<BattleUnit>().partyPosition) return -1; 
-			else return x.GetComponent<BattleUnit>().partyPosition.CompareTo(y.GetComponent<BattleUnit>().partyPosition); 
+		playerParty.Sort(delegate(BattleUnit x, BattleUnit y){
+			if(x.partyPosition == y.partyPosition) return 0; 
+			else if(x.partyPosition > y.partyPosition) return 1; 
+			else if(x.partyPosition < y.partyPosition) return -1; 
+			else return x.partyPosition; 
 		}); 
 	}
 
-	public static void UpdatePlayerUnit(GameObject character){
-		int index = playerParty.FindIndex(u => u.GetComponent<Stats>().name == character.GetComponent<Stats>().name); 
+	public static void UpdatePlayerUnit(BattleUnit character){
+		int index = playerParty.FindIndex(u => u.stats.name == character.stats.name); 
 		playerParty[index] = character; 
 	}
 
-	public static void UpdatePlayerPartyStats(List<GameObject> party){
+	public static void UpdatePlayerPartyStats(List<BattleUnit> party){
 		playerParty = party; 
 	}
 
-	public static void UpdatePlayerPartyPos(GameObject unit, int pos){
-		unit.GetComponent<BattleUnit>().partyPosition = pos; 
+	public static void UpdatePlayerPartyPos(BattleUnit unit, int pos){
+		unit.partyPosition = pos; 
 		SortPlayerParty(); 
 	}
 
-	public static List<GameObject> GetPlayerParty(){
+	public static List<BattleUnit> GetPlayerParty(){
 		return playerParty; 
 	}
 
 	public static void EmptyPlayerParty(){
-		playerParty = new List<GameObject>(); 
+		playerParty = new List<BattleUnit>(); 
 	}
 
-	public static void StoreCollidedEnemy(GameObject enemy){
+	public static void StoreCollidedEnemy(BattleUnit enemy){
 		enemyParty.Add(enemy); 
 	}
 
-	public static List<GameObject> GetEnemyParty(){
+	public static List<BattleUnit> GetEnemyParty(){
 		return enemyParty; 
 	}
 
 	public static void RemoveEnemyParty(){
-		enemyParty = new List<GameObject>(); 
+		enemyParty = new List<BattleUnit>(); 
 	}
 
 	public static void SaveGame(){

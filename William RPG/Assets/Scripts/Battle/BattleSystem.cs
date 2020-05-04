@@ -31,8 +31,8 @@ public class BattleSystem : MonoBehaviour {
 
 	public GameObject turnCarousel; 
 
-	List<GameObject>Party = Data.GetPlayerParty();
-	List<GameObject>EnemyParty = Data.GetEnemyParty(); 
+	List<BattleUnit> Party = Data.GetPlayerParty();
+	List<BattleUnit> EnemyParty = Data.GetEnemyParty(); 
 
 	//the current unit's turn 
 	int currentUnitIndex; 
@@ -97,6 +97,7 @@ public class BattleSystem : MonoBehaviour {
 			GameObject playerObj = Instantiate(player, playerPositions[i]);
 			playerObj.transform.position = playerPositions[i].position;  
 			BattleUnit playerUnit = playerObj.GetComponent<BattleUnit>(); 
+			playerUnit.SetHUD(playerHUDs[i]); 
 			players.Add(playerUnit); 
 
 		}
@@ -134,7 +135,7 @@ public class BattleSystem : MonoBehaviour {
 	//returns list of who goes next based on character's speed
 	List<BattleUnit> getTurnOrder(){
 		//combine lists to compare speed 
-		var newList = players.Concat(enemies); 
+		List<BattleUnit> newList = players.Concat(enemies).ToList(); 
 		//sort by speed 
 		return newList.OrderBy(s => s.GetSpeed()).ToList();  
 	}
@@ -242,12 +243,11 @@ public class BattleSystem : MonoBehaviour {
 		targetIdentifier.SetActive(true); 
 		optionsMenu.SetActive(false);
 		chooseTarget = true;
-		//StartCoroutine(chooseATarget()); 
 		//wait for target to be chosen via Update func
 		yield return new WaitUntil(() => chooseTarget == false); 
 		//attack target 
 		dialogueText.text = enemies[targetPos].TakeDamage(units[currentUnitIndex].GetStrength()); 
-		yield return waitForAnyKeyPress(); 
+		yield return new WaitForSeconds(1);
 		EndPlayerTurn();
 	}
 
@@ -256,7 +256,7 @@ public class BattleSystem : MonoBehaviour {
 		var p = units[currentUnitIndex]; 
 		p.Heal(5); 
 		dialogueText.text = "You feel revived."; 
-		yield return waitForAnyKeyPress();
+		yield return new WaitForSeconds(1);
 		EndPlayerTurn();  
 	}
 
@@ -272,14 +272,13 @@ public class BattleSystem : MonoBehaviour {
 		var p = units[currentUnitIndex]; 
 		p.SetDodging();  
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
-		yield return waitForAnyKeyPress(); 
+		yield return new WaitForSeconds(1);
 		EndPlayerTurn(); 
 	}
 
 	IEnumerator EnemyTurn(){
 		dialogueText.text = units[currentUnitIndex].GetName() + " attacks."; 
 		yield return new WaitForSeconds(1);
-		//yield return waitForAnyKeyPress();
 		//choose a target 
 		dialogueText.text = players[Random.Range(0, players.Count - 1)].TakeDamage(units[currentUnitIndex].GetStrength());   
 		yield return new WaitForSeconds(1);

@@ -9,6 +9,7 @@ public class PlayerHUD : MonoBehaviour {
 	public Text spText; 
 	public Slider hpSlider; 
 	public Slider spSlider; 
+	public Image image; 
 
 	public void SetHUD(Stats stats, Sprite img){
 		hpText.text = stats.hp + "/" + stats.maxHP; 
@@ -21,7 +22,7 @@ public class PlayerHUD : MonoBehaviour {
 		spSlider.minValue = 0; 
 		hpSlider.direction = Slider.Direction.RightToLeft;
 		spSlider.direction = Slider.Direction.RightToLeft; 
-		GetComponent<Image>().sprite = img; 
+		image.sprite = img; 
 	}
 
 	public void UpdateHUD(Stats unit, Sprite img = null){
@@ -31,7 +32,7 @@ public class PlayerHUD : MonoBehaviour {
 		spSlider.value = unit.sp; 
 
 		if(img){
-			GetComponent<Image>().sprite = img; 
+			image.sprite = img; 
 		}
 		
 	}

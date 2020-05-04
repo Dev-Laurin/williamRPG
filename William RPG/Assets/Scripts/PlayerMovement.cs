@@ -48,8 +48,8 @@ public class PlayerMovement : MonoBehaviour
 	void OnTriggerEnter2D(Collider2D other){
 		if(other.gameObject.tag == "Enemy"){
 			//transfer data to global game object 
-			Data.StoreCollidedEnemy(other.gameObject); 
-			Data.UpdatePlayerUnit(gameObject); 
+			Data.StoreCollidedEnemy(other.gameObject.GetComponent<BattleUnit>()); 
+			Data.UpdatePlayerUnit(gameObject.GetComponent<BattleUnit>()); 
 			//Go to next scene 
 			SceneManager.LoadScene("Battle"); 
 		}

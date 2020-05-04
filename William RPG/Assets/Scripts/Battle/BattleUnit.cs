@@ -6,7 +6,7 @@ public class BattleUnit : MonoBehaviour {
 	public Sprite HUDImage; 
 	public bool isPlayer; 
 	public int partyPosition; 
-	Stats stats; 
+	public Stats stats; 
 	Animator animator; 
 	bool isDodging; 
 	PlayerHUD HUD; 
@@ -14,7 +14,6 @@ public class BattleUnit : MonoBehaviour {
 	void Start(){
 		//Set animator
 		animator = GetComponent<Animator>(); 
-		stats = GetComponent<Stats>(); 
 	}
 
 	public void SetPartyPosition(int pos){
