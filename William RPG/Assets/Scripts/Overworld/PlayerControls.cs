@@ -158,6 +158,44 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""BattleMenu"",
+            ""id"": ""2b412ac3-48ee-4e3d-a059-aedc5c870768"",
+            ""actions"": [
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""89ff990f-74d5-4ef5-942f-b7bc4c3cd0c5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4fce52fe-55ba-4df6-9134-f38f89043e40"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""426361aa-d63a-4091-97d9-347b39ce5f5d"",
+                    ""path"": ""<Keyboard>/#(D)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -194,6 +232,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Interact = m_Movement.FindAction("Interact", throwIfNotFound: true);
+        // BattleMenu
+        m_BattleMenu = asset.FindActionMap("BattleMenu", throwIfNotFound: true);
+        m_BattleMenu_Attack = m_BattleMenu.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -280,6 +321,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // BattleMenu
+    private readonly InputActionMap m_BattleMenu;
+    private IBattleMenuActions m_BattleMenuActionsCallbackInterface;
+    private readonly InputAction m_BattleMenu_Attack;
+    public struct BattleMenuActions
+    {
+        private @PlayerControls m_Wrapper;
+        public BattleMenuActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Attack => m_Wrapper.m_BattleMenu_Attack;
+        public InputActionMap Get() { return m_Wrapper.m_BattleMenu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(BattleMenuActions set) { return set.Get(); }
+        public void SetCallbacks(IBattleMenuActions instance)
+        {
+            if (m_Wrapper.m_BattleMenuActionsCallbackInterface != null)
+            {
+                @Attack.started -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnAttack;
+            }
+            m_Wrapper.m_BattleMenuActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
+            }
+        }
+    }
+    public BattleMenuActions @BattleMenu => new BattleMenuActions(this);
     private int m_KeyboardandMouseSchemeIndex = -1;
     public InputControlScheme KeyboardandMouseScheme
     {
@@ -302,5 +376,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+    }
+    public interface IBattleMenuActions
+    {
+        void OnAttack(InputAction.CallbackContext context);
     }
 }

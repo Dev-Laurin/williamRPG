@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement; 
+using UnityEngine.InputSystem;
+
 
 public enum BattleState {START, PLAYERTURN, ENEMYTURN, 
 	WON, LOST}
@@ -31,6 +33,11 @@ public class BattleSystem : MonoBehaviour {
 
 	public GameObject turnCarousel; 
 
+	public GameObject RightButtonUI; 
+	public GameObject DownButtonUI; 
+	public GameObject LeftButtonUI; 
+	public GameObject UpButtonUI; 
+
 	List<BattleUnit> Party = Data.GetPlayerParty();
 	List<BattleUnit> EnemyParty = Data.GetEnemyParty(); 
 
@@ -43,6 +50,22 @@ public class BattleSystem : MonoBehaviour {
 	int targetPos; //position in battlestation array
 
 	public GameObject optionsMenu; 
+	private bool chooseAction; 
+	PlayerControls controls; 
+
+	void Awake(){
+		controls = new PlayerControls(); 
+	}
+
+	private void OnEnable(){
+		controls.BattleMenu.Attack.performed += AttackButton; 
+		controls.BattleMenu.Attack.Enable();
+	}
+
+	private void OnDisable(){
+		controls.BattleMenu.Attack.performed -= AttackButton; 
+		controls.BattleMenu.Attack.Disable();
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -50,7 +73,7 @@ public class BattleSystem : MonoBehaviour {
 		//hide target identifier
 		targetIdentifier.SetActive(false); 
 		Party = Data.GetPlayerParty();
-		StartCoroutine(SetupBattle());  
+		SetupBattle();  
 	}
 
 	private IEnumerator waitForKeyPress(KeyCode key){
@@ -89,7 +112,7 @@ public class BattleSystem : MonoBehaviour {
     	}
 	}
 
-	IEnumerator SetupBattle(){
+	void SetupBattle(){
 
 		//Setup Player Party  
 		for(int i=0; i<Party.Count; i++){
@@ -126,8 +149,12 @@ public class BattleSystem : MonoBehaviour {
 		targetIdentifier.SetActive(false); 
 		targetIdentifier.transform.position = enemyPositions[targetPos].transform.position;
 
-		//wait for user to press enter to go to next text 
-		yield return waitForAnyKeyPress(); 
+		//hide buttons 
+		RightButtonUI.SetActive(false); 
+		DownButtonUI.SetActive(false); 
+		UpButtonUI.SetActive(false); 
+		LeftButtonUI.SetActive(false); 
+		optionsMenu.SetActive(false); 
  
 		SetupNextTurn(); 
 	}
@@ -217,7 +244,39 @@ public class BattleSystem : MonoBehaviour {
 
 	void PlayerTurn(){
 		dialogueText.text = "Choose an action.";
+		//show button choices 
+		RightButtonUI.SetActive(true); 
+		DownButtonUI.SetActive(true); 
+		LeftButtonUI.SetActive(true); 
+		UpButtonUI.SetActive(true); 
+		chooseAction = true; 
 	}
+
+	private void AttackButton(InputAction.CallbackContext context)
+    {
+		var value = context.ReadValue<float>(); 
+        Debug.Log("Attack pressed.");
+		Debug.Log(value); 
+		OnAttackButton(); 
+    }
+
+	private void DodgeButton(InputAction.CallbackContext context)
+    {
+        Debug.Log("Dodge pressed.");
+		OnDodgeButton(); 
+    }
+
+	private void SpecialButton(InputAction.CallbackContext context)
+    {
+        Debug.Log("Special pressed.");
+		OnHealButton(); 
+    }
+
+	private void ItemsButton(InputAction.CallbackContext context)
+    {
+        Debug.Log("Items pressed.");
+		OnItemsButton(); 
+    }
 
 	void Update(){
 		if(chooseTarget){
@@ -265,6 +324,12 @@ public class BattleSystem : MonoBehaviour {
 		//update the carousel 
 		SetTurnCarousel(units);
 		SetupNextTurn();
+		//hide buttons 
+		RightButtonUI.SetActive(false); 
+		DownButtonUI.SetActive(false); 
+		UpButtonUI.SetActive(false); 
+		LeftButtonUI.SetActive(false); 
+		chooseAction = false; 
 	}
 
 	IEnumerator PlayerDodge(){
@@ -274,6 +339,13 @@ public class BattleSystem : MonoBehaviour {
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
 		yield return new WaitForSeconds(1);
 		EndPlayerTurn(); 
+	}
+
+	IEnumerator PlayerUseItem(){
+		dialogueText.text = "Which item do you choose?"; 
+		yield return new WaitForSeconds(1); 
+		//popup the item inventory
+		
 	}
 
 	IEnumerator EnemyTurn(){
@@ -300,7 +372,7 @@ public class BattleSystem : MonoBehaviour {
 		}
 	}
 
-	public void OnAttackButton(){
+	void OnAttackButton(){
 		
 		if(state != BattleState.PLAYERTURN){
 			return; 
@@ -309,7 +381,7 @@ public class BattleSystem : MonoBehaviour {
 		StartCoroutine(PlayerAttack()); 
 	}
 	
-	public void OnHealButton(){
+	void OnHealButton(){
 		
 		if(state != BattleState.PLAYERTURN){
 			return; 
@@ -318,12 +390,20 @@ public class BattleSystem : MonoBehaviour {
 		StartCoroutine(PlayerHeal()); 
 	}
 	
-	public void OnDodgeButton(){
+	void OnDodgeButton(){
 		
 		if(state != BattleState.PLAYERTURN){
 			return; 
 		}
 
 		StartCoroutine(PlayerDodge()); 
+	}
+
+	void OnItemsButton(){
+		if(state != BattleState.PLAYERTURN){
+			return; 
+		}
+
+		StartCoroutine(PlayerUseItem()); 
 	}
 }
