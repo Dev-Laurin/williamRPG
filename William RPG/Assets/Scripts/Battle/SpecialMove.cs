@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class SpecialMove : MonoBehaviour {
 
-	private string name; 
-	private int damage; 
-	private List<StatusEffect> statusEffects; 
+	public string name; 
+	public int damage; 
+	public List<StatusEffect> statusEffects; 
 
-	private Animation animation; 
+	public int animationIndex; 
 
 	public SpecialMove(string Name, int Damage, 
-		List<StatusEffect> se, Animation ani){
+		List<StatusEffect> se, int ani){
 		name = Name; 
 		damage = Damage; 
 		statusEffects = se; 
-		animation = ani; 
+		animationIndex = ani; 
 	}
 
 	public List<StatusEffect> getStatusEffects(){

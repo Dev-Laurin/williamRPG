@@ -49,9 +49,9 @@ public class BattleSystem : MonoBehaviour {
 	bool chooseTarget; //is player choosing a target?
 	int targetPos; //position in battlestation array
 
-	public GameObject optionsMenu; 
 	private bool chooseAction; 
 	PlayerControls controls; 
+	public GameObject specialsMenu; 
 
 	void Awake(){
 		controls = new PlayerControls(); 
@@ -59,12 +59,18 @@ public class BattleSystem : MonoBehaviour {
 
 	private void OnEnable(){
 		controls.BattleMenu.Attack.performed += AttackButton; 
-		controls.BattleMenu.Attack.Enable();
+		controls.BattleMenu.Dodge.performed += DodgeButton; 
+		controls.BattleMenu.Special.performed += SpecialButton; 
+		controls.BattleMenu.Items.performed += ItemsButton; 
+		controls.BattleMenu.Enable();
 	}
 
 	private void OnDisable(){
 		controls.BattleMenu.Attack.performed -= AttackButton; 
-		controls.BattleMenu.Attack.Disable();
+		controls.BattleMenu.Dodge.performed -= DodgeButton; 
+		controls.BattleMenu.Special.performed -= SpecialButton; 
+		controls.BattleMenu.Items.performed -= ItemsButton; 
+		controls.BattleMenu.Disable();
 	}
 
 	// Use this for initialization
@@ -154,7 +160,9 @@ public class BattleSystem : MonoBehaviour {
 		DownButtonUI.SetActive(false); 
 		UpButtonUI.SetActive(false); 
 		LeftButtonUI.SetActive(false); 
-		optionsMenu.SetActive(false); 
+
+		//hide special move
+		specialsMenu.SetActive(false);
  
 		SetupNextTurn(); 
 	}
@@ -208,7 +216,6 @@ public class BattleSystem : MonoBehaviour {
 		
 		if(units[currentUnitIndex].isPlayer){
 			state = BattleState.PLAYERTURN;  
-			optionsMenu.SetActive(true); 
 			PlayerTurn();
 		} 
 		else{
@@ -269,7 +276,7 @@ public class BattleSystem : MonoBehaviour {
 	private void SpecialButton(InputAction.CallbackContext context)
     {
         Debug.Log("Special pressed.");
-		OnHealButton(); 
+		OnSpecialButton(); 
     }
 
 	private void ItemsButton(InputAction.CallbackContext context)
@@ -300,7 +307,6 @@ public class BattleSystem : MonoBehaviour {
 		dialogueText.text = "Choose a target.";
 		targetIdentifier.transform.position = Vector3.MoveTowards(targetIdentifier.transform.position, enemyPositions[0].transform.position, 0.5f);
 		targetIdentifier.SetActive(true); 
-		optionsMenu.SetActive(false);
 		chooseTarget = true;
 		//wait for target to be chosen via Update func
 		yield return new WaitUntil(() => chooseTarget == false); 
@@ -311,7 +317,6 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator PlayerHeal(){
-		optionsMenu.SetActive(false);
 		var p = units[currentUnitIndex]; 
 		p.Heal(5); 
 		dialogueText.text = "You feel revived."; 
@@ -333,7 +338,6 @@ public class BattleSystem : MonoBehaviour {
 	}
 
 	IEnumerator PlayerDodge(){
-		optionsMenu.SetActive(false);
 		var p = units[currentUnitIndex]; 
 		p.SetDodging();  
 		dialogueText.text = "You loosen up and focus on dodging the next attack."; 
@@ -345,7 +349,7 @@ public class BattleSystem : MonoBehaviour {
 		dialogueText.text = "Which item do you choose?"; 
 		yield return new WaitForSeconds(1); 
 		//popup the item inventory
-		
+
 	}
 
 	IEnumerator EnemyTurn(){
@@ -379,6 +383,26 @@ public class BattleSystem : MonoBehaviour {
 		}
 
 		StartCoroutine(PlayerAttack()); 
+	}
+
+	void OnSpecialButton(){
+		if(state != BattleState.PLAYERTURN){
+			return; 
+		}
+		
+		//erase menu
+		foreach(Transform child in specialsMenu.transform){
+			Destroy(child.gameObject); 
+		}
+		//populate menu
+		var currentUnit =  units[currentUnitIndex]; 
+		for(int i=0; i< currentUnit.specialMoves.Count; i++){
+			SpecialMove spMove = currentUnit.specialMoves[i];
+			spMove.transform.SetParent(specialsMenu.transform.parent, false);   
+		}
+		//show menu
+		specialsMenu.SetActive(true); 
+		StartCoroutine(PlayerHeal()); 
 	}
 	
 	void OnHealButton(){

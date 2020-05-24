@@ -7,6 +7,7 @@ public class BattleUnit : MonoBehaviour {
 	public bool isPlayer; 
 	public int partyPosition; 
 	public Stats stats; 
+	public List<SpecialMove> specialMoves; 
 	Animator animator; 
 	bool isDodging; 
 	PlayerHUD HUD; 
@@ -86,5 +87,17 @@ public class BattleUnit : MonoBehaviour {
 
 	public void UpdateHUD(){
 		if(HUD != null) HUD.UpdateHUD(stats); 
+	}
+
+	public void AddSpecialMove(SpecialMove move){
+		specialMoves.Add(move); 
+	}
+
+	public List<SpecialMove> GetSpecialMoves(){
+		return specialMoves; 
+	}
+
+	public int GetSpecialMoveDamage(SpecialMove move){
+		return move.getDamage(); 
 	}
 }

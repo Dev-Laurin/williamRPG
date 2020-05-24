@@ -170,6 +170,30 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dodge"",
+                    ""type"": ""Button"",
+                    ""id"": ""be04cb83-778a-4a12-852c-a72d30b9a572"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Special"",
+                    ""type"": ""Button"",
+                    ""id"": ""aa81a84f-6b43-4d18-883b-09ff0cc244c6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Items"",
+                    ""type"": ""Button"",
+                    ""id"": ""293a5702-56b7-4d29-a111-f5aa6a2e070e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -192,6 +216,72 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bf2491c9-955f-4022-9696-d6a535a03e2f"",
+                    ""path"": ""<Keyboard>/#(S)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0d4cbbbe-09a3-4146-b4d1-53b0620f0d5e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c36bd813-9b65-416e-9406-97600d3a1586"",
+                    ""path"": ""<Keyboard>/#(W)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""67194cf0-286b-47d1-a721-c27bacd5d9d0"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Special"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""13fa0f4a-4288-4b9b-aa59-abcf0011f6fb"",
+                    ""path"": ""<Keyboard>/#(A)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Items"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4d938436-c08c-48b9-9eb9-27ab951a28d1"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Items"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -235,6 +325,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         // BattleMenu
         m_BattleMenu = asset.FindActionMap("BattleMenu", throwIfNotFound: true);
         m_BattleMenu_Attack = m_BattleMenu.FindAction("Attack", throwIfNotFound: true);
+        m_BattleMenu_Dodge = m_BattleMenu.FindAction("Dodge", throwIfNotFound: true);
+        m_BattleMenu_Special = m_BattleMenu.FindAction("Special", throwIfNotFound: true);
+        m_BattleMenu_Items = m_BattleMenu.FindAction("Items", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -326,11 +419,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_BattleMenu;
     private IBattleMenuActions m_BattleMenuActionsCallbackInterface;
     private readonly InputAction m_BattleMenu_Attack;
+    private readonly InputAction m_BattleMenu_Dodge;
+    private readonly InputAction m_BattleMenu_Special;
+    private readonly InputAction m_BattleMenu_Items;
     public struct BattleMenuActions
     {
         private @PlayerControls m_Wrapper;
         public BattleMenuActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Attack => m_Wrapper.m_BattleMenu_Attack;
+        public InputAction @Dodge => m_Wrapper.m_BattleMenu_Dodge;
+        public InputAction @Special => m_Wrapper.m_BattleMenu_Special;
+        public InputAction @Items => m_Wrapper.m_BattleMenu_Items;
         public InputActionMap Get() { return m_Wrapper.m_BattleMenu; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -343,6 +442,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Attack.started -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnAttack;
                 @Attack.performed -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnAttack;
                 @Attack.canceled -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnAttack;
+                @Dodge.started -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnDodge;
+                @Special.started -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnSpecial;
+                @Special.performed -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnSpecial;
+                @Special.canceled -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnSpecial;
+                @Items.started -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnItems;
+                @Items.performed -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnItems;
+                @Items.canceled -= m_Wrapper.m_BattleMenuActionsCallbackInterface.OnItems;
             }
             m_Wrapper.m_BattleMenuActionsCallbackInterface = instance;
             if (instance != null)
@@ -350,6 +458,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
+                @Special.started += instance.OnSpecial;
+                @Special.performed += instance.OnSpecial;
+                @Special.canceled += instance.OnSpecial;
+                @Items.started += instance.OnItems;
+                @Items.performed += instance.OnItems;
+                @Items.canceled += instance.OnItems;
             }
         }
     }
@@ -380,5 +497,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     public interface IBattleMenuActions
     {
         void OnAttack(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
+        void OnSpecial(InputAction.CallbackContext context);
+        void OnItems(InputAction.CallbackContext context);
     }
 }

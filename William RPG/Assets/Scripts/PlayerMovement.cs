@@ -53,5 +53,14 @@ public class PlayerMovement : MonoBehaviour
 			//Go to next scene 
 			SceneManager.LoadScene("Battle"); 
 		}
+		else if(other.gameObject.tag == "Special Item"){
+			Debug.Log("Special Item!!"); 
+			//add special move to character 
+			SpecialMove spMove = other.gameObject.GetComponent<SpecialMove>(); 
+			Debug.Log("Learned Special Move -- " + spMove.name); 
+			gameObject.GetComponent<BattleUnit>().AddSpecialMove(spMove); 
+			//destroy object 
+			Destroy(other.gameObject); 
+		}
 	}
 }
